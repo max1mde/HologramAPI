@@ -1,0 +1,4 @@
+name: HologramAPI
+version: '${version}'
+main: com.maximfiedler.hologramapi.HologramAPI
+api-version: 1.19
