@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.MaximFiedler:HologramAPI:1.0.2'
+  implementation 'com.github.MaximFiedler:HologramAPI:1.0.3'
 }
 ```
 Maven
@@ -32,7 +32,7 @@ Maven
 <dependency>
   <groupId>com.github.MaximFiedler</groupId>
   <artifactId>HologramAPI</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
