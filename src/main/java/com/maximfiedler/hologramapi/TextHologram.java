@@ -66,6 +66,7 @@ public class TextHologram {
         location.getWorld().spawn(location, TextDisplay.class, textDisplay -> {
             this.display = textDisplay;
             textDisplay.addScoreboardTag(this.id);
+            update();
         });
         return this;
     }
