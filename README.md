@@ -30,3 +30,16 @@ Maven
   <version>Tag</version>
 </dependency>
 ```
+
+## Getting started
+
+Create a hologram
+
+```java
+TextHologram hologram = new TextHologram("holo")
+  .setText("Hello world!")
+  .setTextShadow(true)
+  .setSize(new Vector3f(2,2,2))
+  .spawn(Bukkit.getWorld("world").getSpawnLocation());
+```
+
