@@ -62,80 +62,97 @@ public class TextHologram {
      * Spawns the display and applies all specified properties to it
      * @param location
      */
-    public void spawn(Location location) {
+    public TextHologram spawn(Location location) {
         location.getWorld().spawn(location, TextDisplay.class, textDisplay -> {
             this.display = textDisplay;
             textDisplay.addScoreboardTag(this.id);
         });
+        return this;
     }
 
-    public void kill() {
+    public TextHologram kill() {
         this.display.remove();
         this.display = null;
+        return this;
     }
 
-    public void teleport(Location location) {
+    public TextHologram teleport(Location location) {
         display.teleport(location);
+        return this;
     }
 
     /*
      * ======================= SETTERS =======================
      */
 
-    public void setSize(Vector3f size) {
+    public TextHologram setSize(Vector3f size) {
         this.size = size;
+        return this;
     }
 
-    public void setTranslation(Vector3f translation) {
+    public TextHologram setTranslation(Vector3f translation) {
         this.translation = translation;
+        return this;
     }
 
-    public void setRightRotation(Quaternionf rightRotation) {
+    public TextHologram setRightRotation(Quaternionf rightRotation) {
         this.rightRotation = rightRotation;
+        return this;
     }
 
-    public void setLeftRotation(Quaternionf leftRotation) {
+    public TextHologram setLeftRotation(Quaternionf leftRotation) {
         this.leftRotation = leftRotation;
+        return this;
     }
 
-    public void setText(String text) {
+    public TextHologram setText(String text) {
         this.text = text;
+        return this;
     }
 
-    public void setBillboard(Display.Billboard billboard) {
+    public TextHologram setBillboard(Display.Billboard billboard) {
         this.billboard = billboard;
+        return this;
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
+    public TextHologram setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+        return this;
     }
 
-    public void setTextOpacity(byte textOpacity) {
+    public TextHologram setTextOpacity(byte textOpacity) {
         this.textOpacity = textOpacity;
+        return this;
     }
 
-    public void setBrightness(Display.Brightness brightness) {
+    public TextHologram setBrightness(Display.Brightness brightness) {
         this.brightness = brightness;
+        return this;
     }
 
-    public void setAlignment(TextDisplay.TextAlignment alignment) {
+    public TextHologram setAlignment(TextDisplay.TextAlignment alignment) {
         this.alignment = alignment;
+        return this;
     }
 
-    public void setViewRange(float viewRange) {
+    public TextHologram setViewRange(float viewRange) {
         this.viewRange = viewRange;
+        return this;
     }
 
-    public void setSeeThrough(boolean seeThrough) {
+    public TextHologram setSeeThrough(boolean seeThrough) {
         this.seeThrough = seeThrough;
+        return this;
     }
 
-    public void setTextShadow(boolean textShadow) {
+    public TextHologram setTextShadow(boolean textShadow) {
         this.textShadow = textShadow;
+        return this;
     }
 
-    public void setLineWidth(int lineWidth) {
+    public TextHologram setLineWidth(int lineWidth) {
         this.lineWidth = lineWidth;
+        return this;
     }
 
     /*

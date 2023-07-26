@@ -1,10 +1,12 @@
 package com.maximfiedler.hologramapi;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
