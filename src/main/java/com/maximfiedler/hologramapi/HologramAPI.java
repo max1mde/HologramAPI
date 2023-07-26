@@ -18,6 +18,7 @@ public final class HologramAPI extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        hologramAPI = this;
         getServer().getLogger().log(Level.INFO, "Enabled HologramAPI by Maxim Fiedler");
     }
 
