@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.User:Repo:Tag'
+  implementation 'com.github.MaximFiedler:HologramAPI:1.0.0'
 }
 ```
 Maven
@@ -30,9 +30,9 @@ Maven
 </repository>
 
 <dependency>
-  <groupId>com.github.User</groupId>
-  <artifactId>Repo</artifactId>
-  <version>Tag</version>
+  <groupId>com.github.MaximFiedler</groupId>
+  <artifactId>HologramAPI</artifactId>
+  <version>1.0.0</version>
 </dependency>
 ```
 
