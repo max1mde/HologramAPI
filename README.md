@@ -1,1 +1,1 @@
-<h1 textAlign="center">HologramAPI</h1>
+<h1 align="center">HologramAPI</h1>
