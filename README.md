@@ -48,4 +48,4 @@ TextHologram hologram = new TextHologram("holo")
   .spawn(Bukkit.getWorld("world").getSpawnLocation());
 ```
 
-### Note: I did not testet the api... so if there are bugs please open an issue
+I did not test the api yet so if there are bugs please open an issue
