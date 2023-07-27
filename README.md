@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.MaximFiedler:HologramAPI:1.0.3'
+  implementation 'com.github.MaximFiedler:HologramAPI:1.0.4'
 }
 ```
 Maven
@@ -32,7 +32,7 @@ Maven
 <dependency>
   <groupId>com.github.MaximFiedler</groupId>
   <artifactId>HologramAPI</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
@@ -46,6 +46,18 @@ TextHologram hologram = new TextHologram("holo")
   .setTextShadow(true)
   .setSize(new Vector3f(2,2,2))
   .spawn(Bukkit.getWorld("world").getSpawnLocation());
+```
+
+Remove all holograms with a specific ID
+
+```java
+HologramAPI.getHologramAPI().removeAllHologramsByID("YOUR_ID");
+```
+
+Get all holograms with the same ID as a list
+
+```java
+List<TextHologram> holograms = HologramAPI.getHologramAPI().getHologramsByID("YOUR_ID");
 ```
 
 I did not test the api yet so if you find any bugs please open an issue
