@@ -1,10 +1,12 @@
 package com.maximfiedler.hologramapi;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.joml.Vector3f;
 
@@ -19,11 +21,21 @@ public final class HologramAPI extends JavaPlugin {
     @Override
     public void onEnable() {
         hologramAPI = this;
-        getServer().getLogger().log(Level.INFO, "Enabled HologramAPI by Maxim Fiedler");
+        getServer().getLogger().log(Level.INFO, ChatColor.GREEN + this.getDescription().getVersion());
     }
 
     public static HologramAPI getHologramAPI() {
         return hologramAPI;
+    }
+
+    public void removeAllHologramsByID(String id) {
+        for(World world : Bukkit.getWorlds()) {
+            for(Entity entity : world.getEntities()) {
+                if(!(entity instanceof TextDisplay textDisplay)) continue;
+                if(!textDisplay.getScoreboardTags().contains(id + "_hologram_api")) continue;
+                textDisplay.remove();
+            }
+        }
     }
 
     public List<TextHologram> getHologramsByID(String id) {
@@ -32,12 +44,13 @@ public final class HologramAPI extends JavaPlugin {
         for(World world : Bukkit.getWorlds()) {
             for(Entity entity : world.getEntities()) {
                 if(!(entity instanceof TextDisplay textDisplay)) continue;
-                if(textDisplay.getScoreboardTags().contains(id+"_hologram_api")) continue;
+                if(!textDisplay.getScoreboardTags().contains(id + "_hologram_api")) continue;
                 displays.add(textDisplay);
             }
         }
         for(TextDisplay textDisplay : displays) {
             TextHologram hologram = new TextHologram("id");
+            hologram.setDisplay(textDisplay);
             hologram.setText(textDisplay.getText());
             hologram.setBillboard(textDisplay.getBillboard());
             hologram.setBackgroundColor(textDisplay.getBackgroundColor());

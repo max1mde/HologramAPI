@@ -12,13 +12,13 @@ import org.joml.Vector3f;
 public class TextHologram {
     private TextDisplay display;
     private final String id;
-    private Vector3f size = new Vector3f(1,1,1);
+    private Vector3f size = new Vector3f(1.5F,1.5F,1.5F);
     private Vector3f translation = new Vector3f(0,0,0);
     private Quaternionf rightRotation = new Quaternionf(0,0,0,1);
     private Quaternionf leftRotation = new Quaternionf(0,0,0,1);
     private String text = "Hologram API";
     private Display.Billboard billboard = Display.Billboard.CENTER;
-    private Color backgroundColor = Color.fromARGB(100, 50, 50, 0);
+    private Color backgroundColor = Color.fromARGB(100, 222, 222, 222);
     private byte textOpacity;
     private Display.Brightness brightness;
     private TextDisplay.TextAlignment alignment = TextDisplay.TextAlignment.CENTER;
@@ -154,6 +154,10 @@ public class TextHologram {
     public TextHologram setLineWidth(int lineWidth) {
         this.lineWidth = lineWidth;
         return this;
+    }
+
+    public void setDisplay(TextDisplay display) {
+        this.display = display;
     }
 
     /*
