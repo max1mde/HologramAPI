@@ -21,7 +21,7 @@ public final class HologramAPI extends JavaPlugin {
     @Override
     public void onEnable() {
         hologramAPI = this;
-        getServer().getLogger().log(Level.INFO, ChatColor.GREEN + this.getDescription().getVersion());
+        getServer().getLogger().log(Level.INFO, ChatColor.GREEN + "Enabled HologramAPI v" + this.getDescription().getVersion());
     }
 
     public static HologramAPI getHologramAPI() {
