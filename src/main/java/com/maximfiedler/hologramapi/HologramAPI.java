@@ -1,5 +1,6 @@
 package com.maximfiedler.hologramapi;
 
+import com.maximfiedler.hologramapi.bstats.Metrics;
 import com.maximfiedler.hologramapi.hologram.HologramManager;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +13,7 @@ public final class HologramAPI extends JavaPlugin {
     @Override
     public void onEnable() {
         hologramManager = new HologramManager(this);
+        new Metrics(this, 19375);
     }
 
 }
