@@ -38,7 +38,7 @@ Maven
 </dependency>
 ```
 
-## Getting started
+## Examples
 
 Create a hologram
 
