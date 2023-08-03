@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.MaximFiedler:HologramAPI:1.0.4'
+  implementation 'com.github.MaximFiedler:HologramAPI:1.1.1'
 }
 ```
 Maven
@@ -34,7 +34,7 @@ Maven
 <dependency>
   <groupId>com.github.MaximFiedler</groupId>
   <artifactId>HologramAPI</artifactId>
-  <version>1.0.4</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
@@ -43,23 +43,28 @@ Maven
 Create a hologram
 
 ```java
-TextHologram hologram = new TextHologram("holo")
-  .setText("Hello world!")
-  .setTextShadow(true)
-  .setSize(new Vector3f(2,2,2))
-  .spawn(Bukkit.getWorld("world").getSpawnLocation());
+TextHologram hologram = new TextHologram("test_hologram")
+                .setText(ChatColor.AQUA + "Hello world!")
+                .addLine(ChatColor.RED + "Second line")
+                .addLine(ChatColor.DARK_PURPLE + "Third line")
+                .setBillboard(Display.Billboard.CENTER)
+                .setTextShadow(true)
+                .setSize(2,2,2)
+                .setTextOpacity((byte) 200)
+                .setBackgroundColor(Color.fromARGB(0, 255, 236, 222))
+                .spawn(location);
 ```
 
 Remove all holograms with a specific ID
 
 ```java
-HologramAPI.getHologramAPI().removeAllHologramsByID("YOUR_ID");
+HologramAPI.getHologramManager().removeAll("test_hologram");
 ```
 
 Get all holograms with the same ID as a list
 
 ```java
-List<TextHologram> holograms = HologramAPI.getHologramAPI().getHologramsByID("YOUR_ID");
+List<TextHologram> test_holograms = HologramAPI.getHologramManager().getHologramsByID("test_hologram");
 ```
 
 I did not test the api yet so if you find any bugs please open an issue
