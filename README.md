@@ -1,6 +1,9 @@
 <h1 align="center">HologramAPI</h1>
 </div>
 <div align="center">
+  <a href="https://github.com/MaximFiedler/HologramAPI"><img src="https://img.shields.io/badge/Only%20works%20on%20version%201.19.4%20or%20above-CC0502"alt="Version"></a>
+</div>
+<div align="center">
   <a href="https://github.com/MaximFiedler/HologramAPI/blob/master/LICENSE"><img src="https://img.shields.io/github/license/MaximFiedler/HologramAPI.svg" alt="License"></a>  
 <a href="https://github.com/MaximFiedler/HologramAPI/wiki"><img src="https://img.shields.io/badge/Wiki%20page-CC02CC" alt="Version"></a>
 <a href="https://jitpack.io/#MaximFiedler/HologramAPI"><img src="https://jitpack.io/v/MaximFiedler/HologramAPI.svg" alt="jitpack"></a>  
