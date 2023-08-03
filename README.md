@@ -40,4 +40,4 @@ dependencies {
 
 # Wiki
 Code examples & more
-https://github.com/MaximFiedler/HologramAPI/wiki
+https://github.com/MaximFiedler/HologramAPI/wiki/Getting-started
