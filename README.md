@@ -1,28 +1,34 @@
 <h1 align="center">HologramAPI</h1>
 </div>
 <div align="center">
+  <a href="https://github.com/MaximFiedler/HologramAPI"><img src="https://img.shields.io/badge/Only%20works%20on%20version%201.19.4%20or%20above-CC0502"alt="Version"></a>
+</div>
+<div align="center">
   <a href="https://github.com/MaximFiedler/HologramAPI/blob/master/LICENSE"><img src="https://img.shields.io/github/license/MaximFiedler/HologramAPI.svg" alt="License"></a>  
-<a href="https://github.com/MaximFiedler/HologramAPI/releases"><img src="https://img.shields.io/github/v/tag/MaximFiedler/HologramAPI.svg" alt="Version"></a>  
+<a href="https://github.com/MaximFiedler/HologramAPI/wiki"><img src="https://img.shields.io/badge/Wiki%20page-CC02CC" alt="Version"></a>
+<a href="https://github.com/MaximFiedler/ExampleHologramPlugin"><img src="https://img.shields.io/badge/Example%20plugin-13B8E1" alt="Version"></a>
 <a href="https://jitpack.io/#MaximFiedler/HologramAPI"><img src="https://jitpack.io/v/MaximFiedler/HologramAPI.svg" alt="jitpack"></a>  
+<img src="https://github.com/MaximFiedler/HologramAPI/assets/114857048/d1d956b4-192c-4117-8483-4d8e5d973678">
+
 </div>
 
-## Installation
+# Installation
 
-- Download .jar from the [latest release](https://github.com/MaximFiedler/HologramAPI/releases)
-- Upload it to your server (plugins folder)
+- Download HologramAPI-[version]**.jar** file from the [latest release](https://github.com/MaximFiedler/HologramAPI/releases)
+- Upload the HologramAPI-[version]**.jar** file on your server (_yourserver/**plugins**_ folder)
 - Add the plugin as a dependency to your plugin and use it
 
-Gradle
+**Gradle installation**
 ```
 repositories {
   maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-  implementation 'com.github.MaximFiedler:HologramAPI:1.0.4'
+  implementation 'com.github.MaximFiedler:HologramAPI:1.1.1'
 }
 ```
-Maven
+**Maven installation**
 ```
 <repository>
   <id>jitpack.io</id>
@@ -32,32 +38,13 @@ Maven
 <dependency>
   <groupId>com.github.MaximFiedler</groupId>
   <artifactId>HologramAPI</artifactId>
-  <version>1.0.4</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
-## Getting started
+# Wiki
+Code examples & more
+https://github.com/MaximFiedler/HologramAPI/wiki/Getting-started
 
-Create a hologram
-
-```java
-TextHologram hologram = new TextHologram("holo")
-  .setText("Hello world!")
-  .setTextShadow(true)
-  .setSize(new Vector3f(2,2,2))
-  .spawn(Bukkit.getWorld("world").getSpawnLocation());
-```
-
-Remove all holograms with a specific ID
-
-```java
-HologramAPI.getHologramAPI().removeAllHologramsByID("YOUR_ID");
-```
-
-Get all holograms with the same ID as a list
-
-```java
-List<TextHologram> holograms = HologramAPI.getHologramAPI().getHologramsByID("YOUR_ID");
-```
-
-I did not test the api yet so if you find any bugs please open an issue
+# Example/Showcase Plugin
+https://github.com/MaximFiedler/ExampleHologramPlugin
