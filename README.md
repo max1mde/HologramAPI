@@ -45,3 +45,6 @@ dependencies {
 # Wiki
 Code examples & more
 https://github.com/MaximFiedler/HologramAPI/wiki/Getting-started
+
+# Example/Showcase Plugin
+https://github.com/MaximFiedler/ExampleHologramPlugin
