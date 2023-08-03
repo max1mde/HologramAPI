@@ -38,7 +38,7 @@ public class HologramManager {
             int currentFrame = 0;
             public void run() {
                 if(textAnimation.getTextFrames().isEmpty()) return;
-                hologram.setText(textAnimation.getTextFrames().get(0));
+                hologram.setText(textAnimation.getTextFrames().get(currentFrame));
                 hologram.update();
                 currentFrame++;
                 if(currentFrame >= textAnimation.getTextFrames().size()) currentFrame = 0;
