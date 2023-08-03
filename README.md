@@ -39,5 +39,5 @@ dependencies {
 ```
 
 # Wiki
-Some examples and tips
+Code examples & more
 https://github.com/MaximFiedler/HologramAPI/wiki
