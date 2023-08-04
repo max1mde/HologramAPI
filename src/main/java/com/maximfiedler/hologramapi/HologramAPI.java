@@ -8,12 +8,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HologramAPI extends JavaPlugin {
 
-    private static @Getter(AccessLevel.PUBLIC) HologramManager hologramManager;
+    private static HologramManager hologramManager;
 
     @Override
     public void onEnable() {
         hologramManager = new HologramManager(this);
         new Metrics(this, 19375);
+    }
+
+    public HologramManager getHologramManager() {
+        if(hologramManager == null) {
+            hologramManager = new HologramManager(this);
+        }
+        return hologramManager;
     }
 
 }
