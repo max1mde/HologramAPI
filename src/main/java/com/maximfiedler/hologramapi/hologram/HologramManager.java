@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -13,12 +14,12 @@ import java.util.List;
 
 public class HologramManager {
 
-    private final HologramAPI hologramAPI;
+    private final Plugin plugin;
 
     private HashMap<TextHologram, BukkitRunnable> hologramAnimations = new HashMap<>();
 
-    public HologramManager(HologramAPI hologramAPI) {
-        this.hologramAPI = hologramAPI;
+    public HologramManager(Plugin plugin) {
+        this.plugin = plugin;
     }
 
     public void applyAnimation(TextHologram hologram, TextAnimation textAnimation) {
@@ -45,7 +46,7 @@ public class HologramManager {
             }
         };
 
-        animation.runTaskTimerAsynchronously(this.hologramAPI, textAnimation.getDelay(), textAnimation.getSpeed());
+        animation.runTaskTimerAsynchronously(this.plugin, textAnimation.getDelay(), textAnimation.getSpeed());
         return animation;
     }
 
