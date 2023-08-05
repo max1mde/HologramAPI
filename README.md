@@ -7,6 +7,7 @@
 <a href="https://github.com/MaximFiedler/HologramAPI/wiki"><img src="https://img.shields.io/badge/Wiki%20page-CC02CC" alt="Version"></a>
 <a href="https://github.com/MaximFiedler/ExampleHologramPlugin"><img src="https://img.shields.io/badge/Example%20plugin-13B8E1" alt="Version"></a>
 <a href="https://jitpack.io/#MaximFiedler/HologramAPI"><img src="https://jitpack.io/v/MaximFiedler/HologramAPI.svg" alt="jitpack"></a>  
+<a href="https://jitpack.io/#MaximFiedler/HologramAPI"><img src="https://sloc.xyz/github/MaximFiedler/HologramAPI" alt="jitpack"></a>  
 <img src="https://github.com/MaximFiedler/HologramAPI/assets/114857048/598fc978-fcb3-4bd3-8011-55f64aa8d1ab">
 </div>
 
