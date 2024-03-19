@@ -8,7 +8,7 @@
 <a href="https://github.com/max1mde/ExampleHologramPlugin"><img src="https://img.shields.io/badge/Example%20plugin-13B8E1" alt="Version"></a>
 <a href="https://jitpack.io/#max1mde/HologramAPI"><img src="https://jitpack.io/v/max1mde/HologramAPI.svg" alt="jitpack"></a>  
 <a href="https://jitpack.io/#max1mde/HologramAPI"><img src="https://sloc.xyz/github/max1mde/HologramAPI" alt="jitpack"></a>  
-<img src="https://github.com/max1mde/HologramAPI/assets/114857048/598fc978-fcb3-4bd3-8011-55f64aa8d1ab">
+<img src="https://github.com/max1mde/images/blob/main/minasdasdecraft_title%20(1)%20(1).png?raw=true">
 </div>
 
 # Installation
