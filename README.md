@@ -5,7 +5,7 @@
 <a href="https://github.com/max1mde/ExampleHologramPlugin"><img src="https://img.shields.io/badge/Example%20plugin-13B8E1" alt="Version"></a>
 <a href="https://jitpack.io/#max1mde/HologramAPI"><img src="https://jitpack.io/v/max1mde/HologramAPI.svg" alt="jitpack"></a>  
 <a href="https://jitpack.io/#max1mde/HologramAPI"><img src="https://sloc.xyz/github/max1mde/HologramAPI" alt="jitpack"></a>  
-<img width="800px" src="https://github.com/max1mde/HologramAPI/assets/114857048/9de99a06-c007-43f1-b846-938f1115ef7c">
+<img width="800px" src="https://github.com/max1mde/HologramAPI/assets/114857048/d442ef02-aa87-41ed-bfc2-e2e61d6faffd">
 </div>
 
 # Features
