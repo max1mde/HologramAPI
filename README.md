@@ -1,14 +1,11 @@
 </div>
 <div align="center">
-  <a href="https://github.com/MaximFiedler/HologramAPI"><img src="https://img.shields.io/badge/Only%20works%20with%20Minecraft%20version%201.19.4%20or%20above-CC0502"alt="Version"></a>
-</div>
-<div align="center">
-  <a href="https://github.com/max1mde/HologramAPI/blob/master/LICENSE"><img src="https://img.shields.io/github/license/max1mde/HologramAPI.svg" alt="License"></a>  
-<a href="https://github.com/max1mde/HologramAPI/wiki"><img src="https://img.shields.io/badge/Wiki%20page-CC02CC" alt="Version"></a>
+<a href="https://github.com/max1mde/HologramAPI/blob/master/LICENSE"><img src="https://img.shields.io/github/license/max1mde/HologramAPI.svg" alt="License"></a>  
+<a href="https://github.com/max1mde/HologramAPI/wiki"><img src="https://img.shields.io/badge/Wiki%20page-AF5E86" alt="Version"></a>
 <a href="https://github.com/max1mde/ExampleHologramPlugin"><img src="https://img.shields.io/badge/Example%20plugin-13B8E1" alt="Version"></a>
 <a href="https://jitpack.io/#max1mde/HologramAPI"><img src="https://jitpack.io/v/max1mde/HologramAPI.svg" alt="jitpack"></a>  
 <a href="https://jitpack.io/#max1mde/HologramAPI"><img src="https://sloc.xyz/github/max1mde/HologramAPI" alt="jitpack"></a>  
-<img src="https://github.com/max1mde/images/blob/main/minasdasdecraft_title%20(1)%20(1).png?raw=true">
+<img width="800px" src="https://github.com/max1mde/HologramAPI/assets/114857048/d442ef02-aa87-41ed-bfc2-e2e61d6faffd">
 </div>
 
 # Features
