@@ -41,10 +41,16 @@ dependencies {
   <scope>provided</scope>
 </dependency>
 ```
+Add this to your plugin
+`plugin.yml`
+```yml
+depend:
+  - HologramAPI
+```
 
 # Wiki
 Code examples & more
-https://github.com/MaximFiedler/HologramAPI/wiki/Getting-started
+https://github.com/max1mde/HologramAPI/wiki/Getting-started
 
 # Example/Showcase Plugin
-https://github.com/MaximFiedler/ExampleHologramPlugin
+https://github.com/max1mde/ExampleHologramPlugin
