@@ -99,7 +99,7 @@ public class TextHologram {
 
     private void startRunnable() {
         if(task != null) return;
-        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, 20L * 2);
+        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, 20L * 3);
     }
 
     public TextHologram spawn(Location location) {
@@ -108,33 +108,39 @@ public class TextHologram {
         WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(entityID, Optional.of(UUID.randomUUID()),
                 EntityTypes.TEXT_DISPLAY,
                 new Vector3d(this.location.getX(), this.location.getY() + 1, this.location.getZ()), 0f, 0f, 0f, 0, Optional.empty());
-        updateAffectedPlayers();
-        sendPacket(packet);
-        this.dead = false;
+        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), t -> {
+            updateAffectedPlayers();
+            sendPacket(packet);
+            this.dead = false;
+        });
+
+        update();
         return this;
     }
 
     public TextHologram update() {
-        updateAffectedPlayers();
-        TextDisplayMeta meta = (TextDisplayMeta) EntityMeta.createMeta(this.entityID, EntityTypes.TEXT_DISPLAY);
-        meta.setText(getTextAsComponent());
-        meta.setInterpolationDelay(-1);
-        meta.setTransformationInterpolationDuration(this.getInterpolationDurationTicks());
-        meta.setPositionRotationInterpolationDuration(this.getInterpolationDurationTicks());
-        meta.setTranslation(new com.github.retrooper.packetevents.util.Vector3f(this.getTranslation().getX(), this.getTranslation().getY() ,this.getTranslation().getZ()));
-        meta.setScale(new com.github.retrooper.packetevents.util.Vector3f(this.getScale().getX(), this.getScale().getY() ,this.getScale().getZ()));
-        meta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.valueOf(this.getBillboard().name()));
-        meta.setLineWidth(this.getMaxLineWidth());
-        meta.setViewRange((float) this.getViewRange());
-        meta.setBackgroundColor(this.getBackgroundColor());
-        meta.setTextOpacity(this.getTextOpacity());
-        meta.setShadow(this.isShadow());
-        meta.setSeeThrough(this.isSeeThroughBlocks());
-        switch (this.getAlignment()) {
-            case LEFT -> meta.setAlignLeft(true);
-            case RIGHT -> meta.setAlignRight(true);
-        }
-        sendPacket(meta.createPacket());
+        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), t -> {
+            updateAffectedPlayers();
+            TextDisplayMeta meta = (TextDisplayMeta) EntityMeta.createMeta(this.entityID, EntityTypes.TEXT_DISPLAY);
+            meta.setText(getTextAsComponent());
+            meta.setInterpolationDelay(-1);
+            meta.setTransformationInterpolationDuration(this.getInterpolationDurationTicks());
+            meta.setPositionRotationInterpolationDuration(this.getInterpolationDurationTicks());
+            meta.setTranslation(new com.github.retrooper.packetevents.util.Vector3f(this.getTranslation().getX(), this.getTranslation().getY() ,this.getTranslation().getZ()));
+            meta.setScale(new com.github.retrooper.packetevents.util.Vector3f(this.getScale().getX(), this.getScale().getY() ,this.getScale().getZ()));
+            meta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.valueOf(this.getBillboard().name()));
+            meta.setLineWidth(this.getMaxLineWidth());
+            meta.setViewRange((float) this.getViewRange());
+            meta.setBackgroundColor(this.getBackgroundColor());
+            meta.setTextOpacity(this.getTextOpacity());
+            meta.setShadow(this.isShadow());
+            meta.setSeeThrough(this.isSeeThroughBlocks());
+            switch (this.getAlignment()) {
+                case LEFT -> meta.setAlignLeft(true);
+                case RIGHT -> meta.setAlignRight(true);
+            }
+            sendPacket(meta.createPacket());
+        });
         return this;
     }
 
@@ -240,10 +246,13 @@ public class TextHologram {
 
         if(this.getRenderMode() == RenderMode.VIEWER_LIST) return;
         if(this.getRenderMode() == RenderMode.ALL) this.addAllViewers(new ArrayList<>(Bukkit.getOnlinePlayers()));
-        if(this.getRenderMode() == RenderMode.NEARBY) this.location.getWorld().getNearbyEntities(this.location, 40, 40, 40).forEach(entity -> {
-            if(entity instanceof Player pl) this.getViewers().add(pl);
-        });
+        if(this.getRenderMode() == RenderMode.NEARBY) {
+            this.location.getWorld().getNearbyEntities(this.location, 40, 40, 40).forEach(entity -> {
+                if(entity instanceof Player pl) this.getViewers().add(pl);
+            });
+        }
     }
+
 
     private void sendPacket(PacketWrapper<?> packet) {
         if(this.renderMode == RenderMode.NONE) return;
