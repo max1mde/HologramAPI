@@ -43,8 +43,8 @@ public class TextHologram {
 
     // No setters because own implementation of setters at the bottom
     protected Component text = Component.text("Hologram API");
-    protected Vector3f scale = new Vector3f(0,0,0);
-    protected Vector3f translation = new Vector3f(0,  0.7F, 0);
+    protected Vector3f scale = new Vector3f(1,1,1);
+    protected Vector3f translation = new Vector3f(0,  0F, 0);
 
     @Setter @Getter @Accessors(chain = true)
     protected Display.Billboard billboard = Display.Billboard.CENTER;
@@ -110,6 +110,7 @@ public class TextHologram {
                 new Vector3d(this.location.getX(), this.location.getY() + 1, this.location.getZ()), 0f, 0f, 0f, 0, Optional.empty());
         updateAffectedPlayers();
         sendPacket(packet);
+        this.dead = false;
         return this;
     }
 
@@ -171,6 +172,11 @@ public class TextHologram {
         return new Vector3F(this.translation.x, this.translation.y, this.translation.z);
     }
 
+    public TextHologram setTranslation(float x, float y, float z) {
+        this.translation = new Vector3f(x, y, z);
+        return this;
+    }
+
     public TextHologram setTranslation(Vector3F translation) {
         this.translation = new Vector3f(translation.x, translation.y, translation.z);
         return this;
@@ -181,6 +187,11 @@ public class TextHologram {
         return new Vector3F(this.scale.x, this.scale.y, this.scale.z);
     }
 
+
+    public TextHologram setScale(float x, float y, float z) {
+        this.scale = new Vector3f(x, y, z);
+        return this;
+    }
 
     public TextHologram setScale(Vector3F scale) {
         this.scale = new Vector3f(scale.x, scale.y, scale.z);
