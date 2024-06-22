@@ -19,6 +19,9 @@ public final class HologramAPI extends JavaPlugin {
     @Getter
     private static PlayerManager playerManager;
 
+    @Getter
+    private static HologramAPI instance;
+
     @Override
     public void onEnable() {
         hologram = new HologramManager(this);

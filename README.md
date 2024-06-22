@@ -16,6 +16,7 @@
 - Minimessage support
 - Packet based
 - Per player holograms
+- ItemsAdder emoji support
 
 # Installation
 

@@ -2,6 +2,7 @@ package com.maximde.hologramapi.hologram;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -23,8 +24,9 @@ public class HologramManager {
         return (List<TextHologram>) this.hologramsMap.values();
     }
 
-    public void spawn(TextHologram textHologram) {
-
+    public void spawn(TextHologram textHologram, Location location) {
+        textHologram.spawn(location);
+        this.hologramsMap.put(textHologram.getId(), textHologram);
     }
 
     public void remove(TextHologram textHologram) {

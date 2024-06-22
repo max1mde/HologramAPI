@@ -4,10 +4,12 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import com.maximde.hologramapi.HologramAPI;
 import com.maximde.hologramapi.utils.MiniMessage;
 import com.maximde.hologramapi.utils.Vector3F;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -22,6 +24,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.scheduler.BukkitTask;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TextHologram {
 
+    @Getter
     private final String id;
 
     @Getter @Accessors(chain = true)
@@ -77,16 +81,25 @@ public class TextHologram {
     @Getter
     protected boolean dead = false;
 
+    @Getter
+    private BukkitTask task;
+
     public TextHologram(String id, RenderMode renderMode) {
         this.renderMode = renderMode;
         if(id.contains(" ")) throw new IllegalArgumentException("The hologram ID cannot contain spaces! (" + id + ")");
         this.id = id.toLowerCase();
+        startRunnable();
     }
 
     public TextHologram(String id) {
         this.renderMode = RenderMode.NEARBY;
         if(id.contains(" ")) throw new IllegalArgumentException("The hologram ID cannot contain spaces! (" + id + ")");
         this.id = id.toLowerCase();
+    }
+
+    private void startRunnable() {
+        if(task != null) return;
+        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, 20L * 2);
     }
 
     public TextHologram spawn(Location location) {
@@ -128,6 +141,13 @@ public class TextHologram {
         WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(this.entityID);
         sendPacket(packet);
         this.dead = true;
+        return this;
+    }
+
+    public TextHologram teleport(Location location) {
+        WrapperPlayServerEntityTeleport packet = new WrapperPlayServerEntityTeleport(this.entityID, SpigotConversionUtil.fromBukkitLocation(location), false);
+        this.location = location;
+        sendPacket(packet);
         return this;
     }
 
