@@ -59,3 +59,5 @@ https://github.com/max1mde/HologramAPI/wiki/Getting-started
 
 # Example/Showcase Plugin
 https://github.com/max1mde/ExampleHologramPlugin
+
+Contributions to this repo or the example plugin are welcome!
