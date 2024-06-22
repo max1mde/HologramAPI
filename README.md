@@ -25,7 +25,7 @@
 - Add the plugin as a dependency to your plugin and use it
 
 **Gradle installation**
-```
+```groovy
 repositories {
   maven { url 'https://jitpack.io' }
 }
@@ -35,7 +35,7 @@ dependencies {
 }
 ```
 **Maven installation**
-```
+```xml
 <repository>
   <id>jitpack.io</id>
   <url>https://jitpack.io</url>

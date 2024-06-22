@@ -1,29 +1,34 @@
 package com.maximde.hologramapi;
 
+import com.github.retrooper.packetevents.manager.player.PlayerManager;
 import com.maximde.hologramapi.bstats.Metrics;
 import com.maximde.hologramapi.hologram.HologramManager;
-import org.bukkit.plugin.Plugin;
+import com.maximde.hologramapi.utils.ItemsAdderHolder;
+import com.maximde.hologramapi.utils.ReplaceText;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HologramAPI extends JavaPlugin {
 
-    private static HologramManager hologramManager;
+    @Getter
+    private static HologramManager hologram;
+
+    @Getter
+    private static ReplaceText replaceText;
+
+    @Getter
+    private static PlayerManager playerManager;
 
     @Override
     public void onEnable() {
-        hologramManager = new HologramManager(this);
+        hologram = new HologramManager(this);
         new Metrics(this, 19375);
-    }
 
-    public static HologramManager getHologramManager() {
-        return hologramManager;
-    }
-
-    public static HologramManager getHologramManager(Plugin plugin) {
-        if(hologramManager == null) {
-            hologramManager = new HologramManager(plugin);
+        try {
+            replaceText = new ItemsAdderHolder();
+        } catch (ClassNotFoundException exception) {
+            replaceText = s -> s;
         }
-        return hologramManager;
     }
 
 }

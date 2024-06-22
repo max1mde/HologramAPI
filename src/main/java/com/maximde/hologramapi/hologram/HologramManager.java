@@ -1,24 +1,45 @@
 package com.maximde.hologramapi.hologram;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.TextDisplay;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@AllArgsConstructor
 public class HologramManager {
 
     private final Plugin plugin;
 
-    private HashMap<TextHologram, BukkitRunnable> hologramAnimations = new HashMap<>();
+    @Getter
+    private final HashMap<TextHologram, BukkitRunnable> hologramAnimations = new HashMap<>();
 
-    public HologramManager(Plugin plugin) {
-        this.plugin = plugin;
+    @Getter
+    private final HashMap<String, TextHologram> hologramsMap = new HashMap<>();
+
+    public List<TextHologram> getHolograms() {
+        return (List<TextHologram>) this.hologramsMap.values();
+    }
+
+    public void spawn(TextHologram textHologram) {
+
+    }
+
+    public void remove(TextHologram textHologram) {
+        remove(textHologram.getId());
+    }
+
+    public void remove(String id) {
+        if(!hologramsMap.containsKey(id)) return;
+        this.hologramsMap.get(id).kill();
+        this.hologramsMap.remove(id);
+    }
+
+    public void removeAll() {
+        this.hologramsMap.values().forEach(TextHologram::kill);
+        this.hologramsMap.clear();
     }
 
     public void applyAnimation(TextHologram hologram, TextAnimation textAnimation) {
@@ -48,58 +69,4 @@ public class HologramManager {
         animation.runTaskTimerAsynchronously(this.plugin, textAnimation.getDelay(), textAnimation.getSpeed());
         return animation;
     }
-
-    /**
-     * Removes all text-displays if it has a scoreboard tag with the given ID
-     * @param id Hologram ID / scoreboard tag
-     */
-    public void removeAll(String id) {
-        for(World world : Bukkit.getWorlds()) {
-            for(Entity entity : world.getEntities()) {
-                if(!(entity instanceof TextDisplay textDisplay)) continue;
-                if(!textDisplay.getScoreboardTags().contains(id + "_hologram_api")) continue;
-                textDisplay.remove();
-            }
-        }
-    }
-
-    /**
-     * Get all holograms with a specific id in the form of TextHologram objects in a list
-     * @param id the hologram id which is saved as a scoreboard tag
-     * @return TextHologram list
-     */
-    public List<TextHologram> getHologramsByID(String id) {
-        List<TextDisplay> displays = new ArrayList<>();
-        List<TextHologram> holograms = new ArrayList<>();
-        for(World world : Bukkit.getWorlds()) {
-            for(Entity entity : world.getEntities()) {
-                if(!(entity instanceof TextDisplay textDisplay)) continue;
-                if(!textDisplay.getScoreboardTags().contains(id + "_hologram_api")) continue;
-                displays.add(textDisplay);
-            }
-        }
-        for(TextDisplay textDisplay : displays) {
-            TextHologram hologram = new TextHologram("id");
-            hologram.setDisplay(textDisplay);
-            hologram.setText(textDisplay.getText());
-            hologram.setBillboard(textDisplay.getBillboard());
-            hologram.setBackgroundColor(textDisplay.getBackgroundColor());
-            hologram.setAlignment(textDisplay.getAlignment());
-            hologram.setViewRange(textDisplay.getViewRange());
-            hologram.setSeeThrough(textDisplay.isSeeThrough());
-            hologram.setTextShadow(textDisplay.isShadowed());
-            hologram.setLineWidth(textDisplay.getLineWidth());
-            hologram.setTextOpacity(textDisplay.getTextOpacity());
-            hologram.setBrightness(textDisplay.getBrightness());
-            var transformation = textDisplay.getTransformation();
-            hologram.setSize(transformation.getScale());
-            hologram.setLeftRotation(transformation.getLeftRotation());
-            hologram.setRightRotation(transformation.getRightRotation());
-            hologram.setTranslation(transformation.getTranslation());
-            holograms.add(hologram);
-        }
-        displays.clear();
-        return holograms;
-    }
-
 }

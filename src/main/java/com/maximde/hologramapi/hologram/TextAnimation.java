@@ -7,21 +7,22 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class TextAnimation {
 
-    private @Getter List<String> textFrames = new ArrayList<>();
+    private final List<String> textFrames = new ArrayList<>();
 
     /**
      * The display will be updated every x ticks
      * 20 ticks = 1 second
      */
-    private @Getter @Setter @Accessors(chain = true) long speed = 20;
+    private @Setter @Accessors(chain = true) long speed = 20;
 
     /**
      * Delay in ticks when the animation should start
      * 20 ticks = 1 second
      */
-    private @Getter @Setter @Accessors(chain = true) long delay = 20;
+    private @Setter @Accessors(chain = true) long delay = 20;
 
 
     public TextAnimation() {}
