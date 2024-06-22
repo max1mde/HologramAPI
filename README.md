@@ -11,10 +11,17 @@
 <img src="https://github.com/max1mde/images/blob/main/minasdasdecraft_title%20(1)%20(1).png?raw=true">
 </div>
 
+# Features
+- Text animations
+- Minimessage support
+- Packet based
+- Per player holograms
+
 # Installation
 
+- Download packet events https://www.spigotmc.org/resources/80279/
 - Download HologramAPI-[version]**.jar** file from the [latest release](https://github.com/max1mde/HologramAPI/releases)
-- Upload the HologramAPI-[version]**.jar** file on your server (_yourserver/**plugins**_ folder)
+- Upload the HologramAPI-[version]**.jar** and packet events file on your server (_yourserver/**plugins**_ folder)
 - Add the plugin as a dependency to your plugin and use it
 
 **Gradle installation**
