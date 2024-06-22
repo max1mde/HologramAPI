@@ -4,5 +4,8 @@ main: com.maximde.hologramapi.HologramAPI
 api-version: 1.19
 author: MaximDe
 
+softdepend:
+  - ItemsAdder
+
 depend:
   - packetevents
