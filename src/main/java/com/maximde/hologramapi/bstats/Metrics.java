@@ -12,7 +12,7 @@
  *
  * Violations will result in a ban of your plugin and account from bStats.
  */
-package com.maximfiedler.hologramapi.bstats;
+package com.maximde.hologramapi.bstats;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

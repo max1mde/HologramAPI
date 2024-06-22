@@ -1,4 +1,8 @@
 name: HologramAPI
 version: '${version}'
-main: com.maximfiedler.hologramapi.HologramAPI
+main: com.maximde.hologramapi.HologramAPI
 api-version: 1.19
+author: MaximDe
+
+depend:
+  - packetevents

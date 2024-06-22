@@ -1,6 +1,5 @@
-package com.maximfiedler.hologramapi.hologram;
+package com.maximde.hologramapi.hologram;
 
-import com.maximfiedler.hologramapi.HologramAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;

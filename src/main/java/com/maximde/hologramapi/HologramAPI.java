@@ -1,9 +1,7 @@
-package com.maximfiedler.hologramapi;
+package com.maximde.hologramapi;
 
-import com.maximfiedler.hologramapi.bstats.Metrics;
-import com.maximfiedler.hologramapi.hologram.HologramManager;
-import lombok.AccessLevel;
-import lombok.Getter;
+import com.maximde.hologramapi.bstats.Metrics;
+import com.maximde.hologramapi.hologram.HologramManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
