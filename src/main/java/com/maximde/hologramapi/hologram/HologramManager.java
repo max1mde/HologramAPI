@@ -29,6 +29,10 @@ public class HologramManager {
         this.hologramsMap.put(textHologram.getId(), textHologram);
     }
 
+    public void register(TextHologram textHologram) {
+        this.hologramsMap.put(textHologram.getId(), textHologram);
+    }
+
     public void remove(TextHologram textHologram) {
         remove(textHologram.getId());
     }
