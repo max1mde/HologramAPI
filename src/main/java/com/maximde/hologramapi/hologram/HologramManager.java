@@ -6,8 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
 public class HologramManager {
@@ -15,13 +15,13 @@ public class HologramManager {
     private final Plugin plugin;
 
     @Getter
-    private final HashMap<TextHologram, BukkitRunnable> hologramAnimations = new HashMap<>();
+    private final Map<TextHologram, BukkitRunnable> hologramAnimations = new ConcurrentHashMap<>();
 
     @Getter
-    private final HashMap<String, TextHologram> hologramsMap = new HashMap<>();
+    private final Map<String, TextHologram> hologramsMap = new ConcurrentHashMap<>();
 
     public List<TextHologram> getHolograms() {
-        return (List<TextHologram>) this.hologramsMap.values();
+        return new ArrayList<>(this.hologramsMap.values());
     }
 
     public void spawn(TextHologram textHologram, Location location) {
@@ -38,9 +38,7 @@ public class HologramManager {
     }
 
     public void remove(String id) {
-        if(!hologramsMap.containsKey(id)) return;
-        this.hologramsMap.get(id).kill();
-        this.hologramsMap.remove(id);
+        Optional.ofNullable(this.hologramsMap.remove(id)).ifPresent(TextHologram::kill);
     }
 
     public void removeAll() {
@@ -54,21 +52,17 @@ public class HologramManager {
     }
 
     public void cancelAnimation(TextHologram hologram) {
-        if(hologramAnimations.containsKey(hologram)) {
-            hologramAnimations.get(hologram).cancel();
-            hologramAnimations.remove(hologram);
-        }
+        Optional.ofNullable(hologramAnimations.remove(hologram)).ifPresent(BukkitRunnable::cancel);
     }
 
     private BukkitRunnable animateHologram(TextHologram hologram, TextAnimation textAnimation) {
         final BukkitRunnable animation = new BukkitRunnable() {
             int currentFrame = 0;
             public void run() {
-                if(textAnimation.getTextFrames().isEmpty()) return;
+                if (textAnimation.getTextFrames().isEmpty()) return;
                 hologram.setMiniMessageText(textAnimation.getTextFrames().get(currentFrame));
                 hologram.update();
-                currentFrame++;
-                if(currentFrame >= textAnimation.getTextFrames().size()) currentFrame = 0;
+                currentFrame = (currentFrame + 1) % textAnimation.getTextFrames().size();
             }
         };
 

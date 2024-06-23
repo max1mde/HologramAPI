@@ -1,6 +1,7 @@
 package com.maximde.hologramapi.hologram;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
@@ -27,128 +28,155 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.scheduler.BukkitTask;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+
 
 public class TextHologram {
 
+    @Getter @Accessors(chain = true)
+    private long updateTaskPeriod = 20L * 3;
+    @Getter @Accessors(chain = true)
+    private double nearbyEntityScanningDistance = 40.0;
     @Getter
     private final String id;
 
     @Getter @Accessors(chain = true)
-    protected int entityID;
+    private int entityID;
 
-    // No setters because own implementation of setters at the bottom
     protected Component text = Component.text("Hologram API");
-    protected Vector3f scale = new Vector3f(1,1,1);
-    protected Vector3f translation = new Vector3f(0,  0F, 0);
+    protected Vector3f scale = new Vector3f(1, 1, 1);
+    protected Vector3f translation = new Vector3f(0, 0F, 0);
+
+    protected Quaternion4f rightRotation = new Quaternion4f(0, 0, 0, 1);
+    protected Quaternion4f leftRotation = new Quaternion4f(0, 0, 0, 1);
 
     @Setter @Getter @Accessors(chain = true)
-    protected Display.Billboard billboard = Display.Billboard.CENTER;
+    private Display.Billboard billboard = Display.Billboard.CENTER;
     @Setter @Getter @Accessors(chain = true)
-    protected int interpolationDurationTicks = 20;
+    private int interpolationDurationRotation = 10;
     @Setter @Getter @Accessors(chain = true)
-    protected double viewRange = 1;
+    private int interpolationDurationTransformation = 10;
     @Setter @Getter @Accessors(chain = true)
-    protected boolean shadow = true;
+    private double viewRange = 1.0;
     @Setter @Getter @Accessors(chain = true)
-    protected int maxLineWidth = 200;
+    private boolean shadow = true;
     @Setter @Getter @Accessors(chain = true)
-    protected int backgroundColor;
+    private int maxLineWidth = 200;
+    @Setter @Getter @Accessors(chain = true)
+    private int backgroundColor;
+    @Setter @Getter @Accessors(chain = true)
+    private boolean seeThroughBlocks = false;
+    @Setter @Getter @Accessors(chain = true)
+    private TextDisplay.TextAlignment alignment = TextDisplay.TextAlignment.CENTER;
+    @Setter @Getter @Accessors(chain = true)
+    private byte textOpacity = (byte) -1;
 
-    @Setter @Getter @Accessors(chain = true)
-    protected boolean seeThroughBlocks = false;
-    @Setter @Getter @Accessors(chain = true)
-    protected TextDisplay.TextAlignment alignment = TextDisplay.TextAlignment.CENTER;
-    @Setter @Getter @Accessors(chain = true)
-    protected byte textOpacity = (byte) -1;
     @Getter @Accessors(chain = true)
-    public final RenderMode renderMode;
-
+    private final RenderMode renderMode;
 
     @Getter @Accessors(chain = true)
     private Location location;
 
-    /**
-     * Only these player will see the bubble if RenderMode was set to VIEWER_LIST
-     */
     @Getter
-    protected List<Player> viewers = new ArrayList<>();
+    private final List<Player> viewers = new CopyOnWriteArrayList<>();
 
     @Getter
-    protected boolean dead = false;
+    private boolean dead = false;
 
     @Getter
     private BukkitTask task;
 
     public TextHologram(String id, RenderMode renderMode) {
         this.renderMode = renderMode;
-        if(id.contains(" ")) throw new IllegalArgumentException("The hologram ID cannot contain spaces! (" + id + ")");
+        validateId(id);
         this.id = id.toLowerCase();
         startRunnable();
     }
 
     public TextHologram(String id) {
-        this.renderMode = RenderMode.NEARBY;
-        if(id.contains(" ")) throw new IllegalArgumentException("The hologram ID cannot contain spaces! (" + id + ")");
-        this.id = id.toLowerCase();
+        this(id, RenderMode.NEARBY);
+    }
+
+    private void validateId(String id) {
+        if (id.contains(" ")) {
+            throw new IllegalArgumentException("The hologram ID cannot contain spaces! (" + id + ")");
+        }
     }
 
     private void startRunnable() {
-        if(task != null) return;
-        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, 20L * 3);
+        if (task != null) return;
+        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, updateTaskPeriod);
     }
 
-    public TextHologram spawn(Location location) {
+    /**
+     * Use HologramManager#spawn(TextHologram.class, Location.class); instead!
+     * Only if you want to manage the holograms yourself and don't want to use the animation system use this
+     */
+    public void spawn(Location location) {
         this.location = location;
         entityID = ThreadLocalRandom.current().nextInt(4000, Integer.MAX_VALUE);
-        WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(entityID, Optional.of(UUID.randomUUID()),
-                EntityTypes.TEXT_DISPLAY,
-                new Vector3d(this.location.getX(), this.location.getY() + 1, this.location.getZ()), 0f, 0f, 0f, 0, Optional.empty());
-        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), t -> {
+        WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(
+                entityID, Optional.of(UUID.randomUUID()), EntityTypes.TEXT_DISPLAY,
+                new Vector3d(location.getX(), location.getY() + 1, location.getZ()), 0f, 0f, 0f, 0, Optional.empty()
+        );
+        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
             updateAffectedPlayers();
             sendPacket(packet);
             this.dead = false;
         });
-
         update();
-        return this;
     }
 
     public TextHologram update() {
-        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), t -> {
+        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
             updateAffectedPlayers();
-            TextDisplayMeta meta = (TextDisplayMeta) EntityMeta.createMeta(this.entityID, EntityTypes.TEXT_DISPLAY);
-            meta.setText(getTextAsComponent());
-            meta.setInterpolationDelay(-1);
-            meta.setTransformationInterpolationDuration(this.getInterpolationDurationTicks());
-            meta.setPositionRotationInterpolationDuration(this.getInterpolationDurationTicks());
-            meta.setTranslation(new com.github.retrooper.packetevents.util.Vector3f(this.getTranslation().getX(), this.getTranslation().getY() ,this.getTranslation().getZ()));
-            meta.setScale(new com.github.retrooper.packetevents.util.Vector3f(this.getScale().getX(), this.getScale().getY() ,this.getScale().getZ()));
-            meta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.valueOf(this.getBillboard().name()));
-            meta.setLineWidth(this.getMaxLineWidth());
-            meta.setViewRange((float) this.getViewRange());
-            meta.setBackgroundColor(this.getBackgroundColor());
-            meta.setTextOpacity(this.getTextOpacity());
-            meta.setShadow(this.isShadow());
-            meta.setSeeThrough(this.isSeeThroughBlocks());
-            switch (this.getAlignment()) {
-                case LEFT -> meta.setAlignLeft(true);
-                case RIGHT -> meta.setAlignRight(true);
-            }
+            TextDisplayMeta meta = createMeta();
             sendPacket(meta.createPacket());
         });
         return this;
     }
 
-    public TextHologram kill() {
+    private TextDisplayMeta createMeta() {
+        TextDisplayMeta meta = (TextDisplayMeta) EntityMeta.createMeta(this.entityID, EntityTypes.TEXT_DISPLAY);
+        meta.setText(getTextAsComponent());
+        meta.setInterpolationDelay(-1);
+        meta.setTransformationInterpolationDuration(this.interpolationDurationTransformation);
+        meta.setPositionRotationInterpolationDuration(this.interpolationDurationRotation);
+        meta.setTranslation(toVector3f(this.translation));
+        meta.setScale(toVector3f(this.scale));
+        meta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.valueOf(this.billboard.name()));
+        meta.setLineWidth(this.maxLineWidth);
+        meta.setViewRange((float) this.viewRange);
+        meta.setBackgroundColor(this.backgroundColor);
+        meta.setTextOpacity(this.textOpacity);
+        meta.setShadow(this.shadow);
+        meta.setSeeThrough(this.seeThroughBlocks);
+        setAlignment(meta);
+        return meta;
+    }
+
+    private TextHologram setAlignment(TextDisplayMeta meta) {
+        switch (this.alignment) {
+            case LEFT -> meta.setAlignLeft(true);
+            case RIGHT -> meta.setAlignRight(true);
+        }
+        return this;
+    }
+
+    private com.github.retrooper.packetevents.util.Vector3f toVector3f(Vector3f vector) {
+        return new com.github.retrooper.packetevents.util.Vector3f(vector.x, vector.y, vector.z);
+    }
+
+    /**
+     * Use HologramManager#remove(TextHologram.class); instead!
+     * Only if you want to manage the holograms yourself and don't want to use the animation system use this
+     */
+    public void kill() {
         WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(this.entityID);
         sendPacket(packet);
         this.dead = true;
-        return this;
     }
 
     public TextHologram teleport(Location location) {
@@ -158,24 +186,38 @@ public class TextHologram {
         return this;
     }
 
-    public void addAllViewers(List<Player> viewerList) {
+    public TextHologram addAllViewers(List<Player> viewerList) {
         this.viewers.addAll(viewerList);
+        return this;
     }
 
-    public void addViewer(Player player) {
+    public TextHologram addViewer(Player player) {
         this.viewers.add(player);
+        return this;
     }
 
-    public void removeViewer(Player player) {
+    public TextHologram removeViewer(Player player) {
         this.viewers.remove(player);
+        return this;
     }
 
-    public void removeAllViewers() {
+    public TextHologram removeAllViewers() {
         this.viewers.clear();
+        return this;
     }
 
     public Vector3F getTranslation() {
         return new Vector3F(this.translation.x, this.translation.y, this.translation.z);
+    }
+
+    public TextHologram setLeftRotation(float x, float y, float z, float w) {
+        this.leftRotation = new Quaternion4f(x, y, z, w);
+        return this;
+    }
+
+    public TextHologram setRightRotation(float x, float y, float z, float w) {
+        this.rightRotation = new Quaternion4f(x, y, z, w);
+        return this;
     }
 
     public TextHologram setTranslation(float x, float y, float z) {
@@ -188,11 +230,9 @@ public class TextHologram {
         return this;
     }
 
-
     public Vector3F getScale() {
         return new Vector3F(this.scale.x, this.scale.y, this.scale.z);
     }
-
 
     public TextHologram setScale(float x, float y, float z) {
         this.scale = new Vector3f(x, y, z);
@@ -209,7 +249,7 @@ public class TextHologram {
     }
 
     public String getText() {
-        return ((TextComponent)this.text).content();
+        return ((TextComponent) this.text).content();
     }
 
     public String getTextWithoutColor() {
@@ -236,29 +276,27 @@ public class TextHologram {
     }
 
     private void updateAffectedPlayers() {
+        viewers.stream()
+                .filter(player -> player.isOnline() && (player.getWorld() != this.location.getWorld() || player.getLocation().distance(this.location) > 20))
+                .forEach(player -> {
+                    WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(this.entityID);
+                    HologramAPI.getPlayerManager().sendPacket(player, packet);
+                });
 
-        if(!this.getViewers().isEmpty()) this.getViewers().forEach(player1 -> {
-            if(player1.isOnline() && player1.getWorld() != this.location.getWorld() || player1.getLocation().distance(this.location) > 20) {
-                WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(this.entityID);
-                if(player1.isOnline()) HologramAPI.getPlayerManager().sendPacket(player1, packet);
-            }
-        });
+        if (this.renderMode == RenderMode.VIEWER_LIST) return;
 
-        if(this.getRenderMode() == RenderMode.VIEWER_LIST) return;
-        if(this.getRenderMode() == RenderMode.ALL) this.addAllViewers(new ArrayList<>(Bukkit.getOnlinePlayers()));
-        if(this.getRenderMode() == RenderMode.NEARBY) {
-            this.location.getWorld().getNearbyEntities(this.location, 40, 40, 40).forEach(entity -> {
-                if(entity instanceof Player pl) this.getViewers().add(pl);
-            });
+        if (this.renderMode == RenderMode.ALL) {
+            this.addAllViewers(new ArrayList<>(Bukkit.getOnlinePlayers()));
+        } else if (this.renderMode == RenderMode.NEARBY) {
+            this.location.getWorld().getNearbyEntities(this.location, nearbyEntityScanningDistance, nearbyEntityScanningDistance, nearbyEntityScanningDistance)
+                    .stream()
+                    .filter(entity -> entity instanceof Player)
+                    .forEach(entity -> this.viewers.add((Player) entity));
         }
     }
 
-
     private void sendPacket(PacketWrapper<?> packet) {
-        if(this.renderMode == RenderMode.NONE) return;
-        this.getViewers().forEach(player -> {
-            HologramAPI.getPlayerManager().sendPacket(player, packet);
-        });
+        if (this.renderMode == RenderMode.NONE) return;
+        viewers.forEach(player -> HologramAPI.getPlayerManager().sendPacket(player, packet));
     }
-
 }
