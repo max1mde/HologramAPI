@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.maximde'
-version = '1.2.5'
+version = '1.3.0'
 
 repositories {
     maven { url 'https://repo.papermc.io/repository/maven-public/' }
@@ -17,24 +17,25 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven { url 'https://maven.evokegames.gg/snapshots' }
     maven { url 'https://repo.codemc.io/repository/maven-releases/' }
-    maven { url 'https://jitpack.io' }
 
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
-    compileOnly 'io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT'
+    compileOnly "org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT"
 
-    compileOnly 'com.github.retrooper.packetevents:spigot:2.3.0'
-    implementation 'com.github.Tofaa2.EntityLib:spigot:2.3.1-SNAPSHOT'
+    compileOnly 'com.github.retrooper:packetevents-spigot:2.6.0'
+    implementation 'me.tofaa.entitylib:spigot:2.4.11-SNAPSHOT'
     implementation "net.kyori:adventure-text-minimessage:4.17.0"
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.1'
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 17
 
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)

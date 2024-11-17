@@ -68,7 +68,7 @@ public class TextHologram {
     private int backgroundColor;
     @Setter @Getter @Accessors(chain = true)
     private boolean seeThroughBlocks = false;
-    @Setter @Getter @Accessors(chain = true)
+    @Getter @Accessors(chain = true)
     private TextDisplay.TextAlignment alignment = TextDisplay.TextAlignment.CENTER;
     @Setter @Getter @Accessors(chain = true)
     private byte textOpacity = (byte) -1;
