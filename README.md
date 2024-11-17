@@ -53,11 +53,80 @@ depend:
   - HologramAPI
 ```
 
-# Wiki
-Code examples & more
-https://github.com/max1mde/HologramAPI/wiki/Getting-started
-
 # Example/Showcase Plugin
 https://github.com/max1mde/ExampleHologramPlugin
+
+
+# First steps
+---------------------------------------------------------------------
+### Creating a hologram
+
+> Display.Billboard.CENTER = the hologram rotates to the player like a nametag (default value)<br>
+> Display.Billboard.FIXED = The holograms rotation is fixed<br>
+> Display.Billboard.VERTICAL = The hologram only rotates to the left and right (is horizontally fixed)<br>
+> Display.Billboard.HORIZONTAL = The hologram only rotates up and down (is vertically fixed)<br>
+
+```java
+TextHologram hologram = new TextHologram("your_hologram_id")
+                .setMiniMessageText("<aqua>Hello world!")
+                .setSeeThroughBlocks(false)
+                .setBillboard(Display.Billboard.VERTICAL)
+                .setShadow(true)
+                .setScale(1.5F,1.5F,1.5F)
+                .setTextOpacity((byte) 200)
+                .setBackgroundColor(Color.fromARGB(0/*Opacity*/, 255/*Red*/, 236/*Green*/, 222/*Blue*/).asARGB()); // You can use the https://htmlcolorcodes.com/color-picker/ to get the RGB color you want!
+```
+
+Spawn and remove your hologram
+```
+HologramAPI.getHologram().spawn(hologram, <location>);
+HologramAPI.getHologram().remove(hologram);
+```
+
+You can change the attributes of the hologram afterwards but you always **need** to call the TextHologram#**update()** method to apply the changes to the hologram
+
+```java
+hologram.setSize(0.5F,0.5F,0.5F); // The hologram is now 50% smaller
+hologram.setSize(5,5,5); // And now 5 times bigger
+hologram.setMiniMessageText("<red>Updated text!")
+hologram.update();
+```
+
+You can also kill the hologram what only kills the entity not the data in that TextHologram object
+This means you can just call the TextHologram#spawn() method
+```java
+hologram.kill();
+hologram.spawn(LOCATION);
+```
+---------------------------------------------------------------------
+### Animations
+
+**Text animation**
+This animation changes the text content every _x_ ticks after _x_ ticks
+```java
+TextAnimation animation = new TextAnimation()
+                        .addFrame(ChatColor.RED + "First frame")
+                        .addFrame("Second frame")
+                        .addFrame("Third frame\nSecond line")
+                        .addFrame("Last frame");
+```
+Default values of speed and delay are 20 ticks (1 second)
+You can change these values like that:
+```java
+animation.setDelay(20 * 5); // The animation starts after 5 seconds
+animation.setSpeed(20 * 3); // The text gets updated every 3 seconds
+```
+
+**Apply the animation on a hologram**
+> If the hologram already has an active animation the new one will be played and the previous cancelled
+```java
+HologramAPI.getHologramManager().applyAnimation(hologram, animation);
+```
+
+**Stop an animation**
+```java
+HologramAPI.getHologramManager().cancelAnimation(hologram);
+```
+---------------------------------------------------------------------
 
 Contributions to this repo or the example plugin are welcome!
