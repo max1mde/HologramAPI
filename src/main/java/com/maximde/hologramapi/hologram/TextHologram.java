@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import com.maximde.hologramapi.HologramAPI;
 import com.maximde.hologramapi.utils.MiniMessage;
@@ -127,6 +128,14 @@ public class TextHologram {
             this.dead = false;
         });
         update();
+    }
+
+    public void attach(TextHologram textHologram, int entityID) {
+        int[] hologramToArray = { textHologram.getEntityID() };
+        WrapperPlayServerSetPassengers attachPacket = new WrapperPlayServerSetPassengers(entityID, hologramToArray);
+        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
+            sendPacket(attachPacket);
+        });
     }
 
     public TextHologram update() {

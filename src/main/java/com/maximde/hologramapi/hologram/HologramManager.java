@@ -29,6 +29,10 @@ public class HologramManager {
         this.hologramsMap.put(textHologram.getId(), textHologram);
     }
 
+    public void attach(TextHologram textHologram, int entityID) {
+        textHologram.attach(textHologram, entityID);
+    }
+
     public void register(TextHologram textHologram) {
         this.hologramsMap.put(textHologram.getId(), textHologram);
     }
