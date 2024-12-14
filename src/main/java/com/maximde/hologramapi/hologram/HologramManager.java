@@ -76,8 +76,8 @@ public class HologramManager {
                 "leaderboard_" + UUID.randomUUID().toString().substring(0, 8)
         );
 
-        updateLeaderboard(hologram, leaderboardData, options);
         spawn(hologram, location);
+        updateLeaderboard(hologram, leaderboardData, options);
         return hologram;
     }
 
