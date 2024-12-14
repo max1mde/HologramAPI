@@ -69,7 +69,7 @@ public class TextHologram {
     private int backgroundColor;
     @Setter @Getter @Accessors(chain = true)
     private boolean seeThroughBlocks = false;
-    @Getter @Accessors(chain = true)
+    @Setter @Getter @Accessors(chain = true)
     private TextDisplay.TextAlignment alignment = TextDisplay.TextAlignment.CENTER;
     @Setter @Getter @Accessors(chain = true)
     private byte textOpacity = (byte) -1;
@@ -89,15 +89,67 @@ public class TextHologram {
     @Getter
     private BukkitTask task;
 
+    @Getter
+    /**
+     * Do not use this if you don't know what you are doing!
+     * this interface for accessing specific setters is only for internal methods.
+     */
+    private Internal internalAccess;
+
+    public interface Internal {
+        /**
+         * Use TextHologram#telport(Location) if you want to move the hologram instead!
+         * @param location
+         */
+        void setLocation(Location location);
+        void setDead(boolean dead);
+        void setEntityId(int entityId);
+        void sendPacket(PacketWrapper<?> packet);
+        void updateAffectedPlayers();
+    }
+
+
     public TextHologram(String id, RenderMode renderMode) {
         this.renderMode = renderMode;
         validateId(id);
         this.id = id.toLowerCase();
         startRunnable();
+        this.internalAccess = new InternalSetters();
     }
 
     public TextHologram(String id) {
         this(id, RenderMode.NEARBY);
+        this.internalAccess = new InternalSetters();
+    }
+
+    private class InternalSetters implements Internal {
+        @Override
+        public void setLocation(Location location) {
+            if (location == null) {
+                throw new IllegalArgumentException("Location cannot be null");
+            }
+            TextHologram.this.location = location;
+        }
+
+        @Override
+        public void setDead(boolean dead) {
+            TextHologram.this.dead = dead;
+        }
+
+        @Override
+        public void setEntityId(int entityId) {
+            TextHologram.this.entityID = entityId;
+        }
+
+        @Override
+        public void sendPacket(PacketWrapper<?> packet) {
+            TextHologram.this.sendPacket(packet);
+        }
+
+        @Override
+        public void updateAffectedPlayers() {
+            TextHologram.this.updateAffectedPlayers();
+        }
     }
 
     private void validateId(String id) {
@@ -108,13 +160,13 @@ public class TextHologram {
 
     private void startRunnable() {
         if (task != null) return;
-        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, updateTaskPeriod);
+        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance().get(), this::updateAffectedPlayers, 20L, updateTaskPeriod);
     }
 
     /**
      * Use HologramManager#spawn(TextHologram.class, Location.class); instead!
-     * Only if you want to manage the holograms yourself and don't want to use the animation system use this
      */
+    @Deprecated
     public void spawn(Location location) {
         this.location = location;
         entityID = ThreadLocalRandom.current().nextInt(4000, Integer.MAX_VALUE);
@@ -122,7 +174,7 @@ public class TextHologram {
                 entityID, Optional.of(UUID.randomUUID()), EntityTypes.TEXT_DISPLAY,
                 new Vector3d(location.getX(), location.getY() + 1, location.getZ()), 0f, 0f, 0f, 0, Optional.empty()
         );
-        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance().get(), () -> {
             updateAffectedPlayers();
             sendPacket(packet);
             this.dead = false;
@@ -133,13 +185,13 @@ public class TextHologram {
     public void attach(TextHologram textHologram, int entityID) {
         int[] hologramToArray = { textHologram.getEntityID() };
         WrapperPlayServerSetPassengers attachPacket = new WrapperPlayServerSetPassengers(entityID, hologramToArray);
-        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance().get(), () -> {
             sendPacket(attachPacket);
         });
     }
 
     public TextHologram update() {
-        HologramAPI.getInstance().getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance().get(), () -> {
             updateAffectedPlayers();
             TextDisplayMeta meta = createMeta();
             sendPacket(meta.createPacket());
@@ -162,16 +214,15 @@ public class TextHologram {
         meta.setTextOpacity(this.textOpacity);
         meta.setShadow(this.shadow);
         meta.setSeeThrough(this.seeThroughBlocks);
-        setAlignment(meta);
+        setInternalAlignment(meta);
         return meta;
     }
 
-    private TextHologram setAlignment(TextDisplayMeta meta) {
+    private void setInternalAlignment(TextDisplayMeta meta) {
         switch (this.alignment) {
             case LEFT -> meta.setAlignLeft(true);
             case RIGHT -> meta.setAlignRight(true);
         }
-        return this;
     }
 
     private com.github.retrooper.packetevents.util.Vector3f toVector3f(Vector3f vector) {

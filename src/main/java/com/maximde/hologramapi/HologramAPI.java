@@ -11,12 +11,17 @@ import lombok.Getter;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Optional;
+import java.util.logging.Level;
 
 public final class HologramAPI extends JavaPlugin {
 
     @Getter
-    private static HologramManager hologram;
+    private static HologramManager manager;
 
     @Getter
     private static ReplaceText replaceText;
@@ -24,8 +29,31 @@ public final class HologramAPI extends JavaPlugin {
     @Getter
     private static PlayerManager playerManager;
 
-    @Getter
     private static HologramAPI instance;
+
+    public static Optional<HologramAPI> getInstance() {
+        if (instance == null) {
+            Bukkit.getLogger().log(Level.SEVERE, "Tried to access the HologramAPI but it was not initialized yet! Add depends 'HologramAPI' to your plugin.yml and make sure the plugin itself is on the server! Otherwise use HologramAPI#getInstance(Plugin <your plugin instance>) if you are shading the API!");
+        }
+        return Optional.ofNullable(instance);
+    }
+
+    public static Optional<HologramAPI> getInstance(Plugin plugin) {
+        if (plugin == null) return Optional.empty();
+
+        if(instance != null) return Optional.of(instance);
+
+        if (plugin instanceof JavaPlugin javaPlugin) {
+            javaPlugin.getLogger().log(Level.INFO, "Initializing HologramAPI from shaded plugin context.");
+            instance = new HologramAPI();
+            instance.onLoad();
+            instance.onEnable();
+            return Optional.of(instance);
+        }
+
+        Bukkit.getLogger().log(Level.SEVERE, "Unable to initialize HologramAPI: Provided plugin is not a valid JavaPlugin.");
+        return Optional.empty();
+    }
 
     @Override
     public void onLoad() {
@@ -38,7 +66,7 @@ public final class HologramAPI extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
+        if(instance == null) instance = this;
         PacketEvents.getAPI().init();
 
         SpigotEntityLibPlatform platform = new SpigotEntityLibPlatform(this);
@@ -49,7 +77,7 @@ public final class HologramAPI extends JavaPlugin {
 
         playerManager = PacketEvents.getAPI().getPlayerManager();
 
-        hologram = new HologramManager(this);
+        manager = new HologramManager(this);
         new Metrics(this, 19375);
 
         try {
