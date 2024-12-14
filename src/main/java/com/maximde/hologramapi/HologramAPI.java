@@ -1,6 +1,7 @@
 package com.maximde.hologramapi;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.PacketEventsAPI;
 import com.github.retrooper.packetevents.manager.player.PlayerManager;
 import com.maximde.hologramapi.bstats.Metrics;
 import com.maximde.hologramapi.hologram.HologramManager;
@@ -8,6 +9,7 @@ import com.maximde.hologramapi.utils.ItemsAdderHolder;
 import com.maximde.hologramapi.utils.ReplaceText;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
@@ -21,7 +23,7 @@ import java.util.logging.Level;
 public final class HologramAPI extends JavaPlugin {
 
     @Getter
-    private static HologramAPI instance;
+    private static volatile HologramAPI instance;
 
     @Getter
     private ReplaceText replaceText;
@@ -29,19 +31,24 @@ public final class HologramAPI extends JavaPlugin {
     @Getter
     private PlayerManager playerManager;
 
+    @Getter
     private HologramManager hologramManager;
 
     public static Optional<HologramManager> getManager() {
-        if (instance == null || instance.hologramManager == null) {
-            Bukkit.getLogger().log(Level.SEVERE, "HologramAPI has not been initialized yet. Make sure to include 'HologramAPI' as a dependency in your plugin.yml and that the plugin is enabled!");
-            return Optional.empty();
-        }
-        return Optional.of(instance.hologramManager);
+        return Optional.ofNullable(getInstance().hologramManager)
+                .or(() -> {
+                    Bukkit.getLogger().log(Level.SEVERE,
+                            "HologramAPI has not been initialized yet. " +
+                                    "Ensure 'HologramAPI' is included as a dependency in your plugin.yml.");
+                    return Optional.empty();
+                });
     }
 
+    @SneakyThrows
     public static Optional<HologramManager> getManager(Plugin plugin) {
         if (!(plugin instanceof JavaPlugin)) {
-            Bukkit.getLogger().log(Level.SEVERE, "Unable to initialize HologramAPI: Provided plugin is not a valid JavaPlugin.");
+            Bukkit.getLogger().log(Level.SEVERE,
+                    "Unable to initialize HologramAPI: Provided plugin is not a valid JavaPlugin.");
             return Optional.empty();
         }
 
@@ -49,43 +56,92 @@ public final class HologramAPI extends JavaPlugin {
             return Optional.of(instance.hologramManager);
         }
 
-        Bukkit.getLogger().log(Level.INFO, "Initializing HologramAPI from a shaded plugin context.");
-        HologramAPI api = new HologramAPI();
-        api.onLoad();
-        api.onEnable();
-        return Optional.ofNullable(api.hologramManager);
+        synchronized (HologramAPI.class) {
+            if (instance == null) {
+                Bukkit.getLogger().log(Level.INFO,
+                        "Initializing HologramAPI from a shaded plugin context.");
+
+                HologramAPI api = new HologramAPI();
+                api.onLoad();
+                api.onEnable();
+
+                return Optional.ofNullable(api.hologramManager);
+            }
+        }
+
+        return Optional.ofNullable(instance.hologramManager);
     }
 
     @Override
     public void onLoad() {
         instance = this;
-        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        Optional.ofNullable(SpigotPacketEventsBuilder.build(this))
+                .ifPresentOrElse(
+                        PacketEvents::setAPI,
+                        () -> getLogger().severe("Failed to build PacketEvents API")
+                );
+
         PacketEvents.getAPI().load();
     }
 
     @Override
     public void onEnable() {
-        PacketEvents.getAPI().init();
+        try {
+            initializePacketEvents();
+            initializeEntityLib();
+            initializeManagers();
+            initializeMetrics();
+            initializeReplaceText();
+        } catch (Exception e) {
+            getLogger().log(Level.SEVERE, "Failed to enable HologramAPI", e);
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
+    }
 
+    private void initializePacketEvents() {
+        PacketEvents.getAPI().init();
+    }
+
+    private void initializeEntityLib() {
         SpigotEntityLibPlatform platform = new SpigotEntityLibPlatform(this);
         APIConfig config = new APIConfig(PacketEvents.getAPI())
                 .usePlatformLogger();
         EntityLib.init(platform, config);
+    }
 
+    private void initializeManagers() {
         this.playerManager = PacketEvents.getAPI().getPlayerManager();
         this.hologramManager = new HologramManager();
+    }
 
+    private void initializeMetrics() {
         new Metrics(this, 19375);
+    }
 
+    private void initializeReplaceText() {
+        this.replaceText = createReplaceTextInstance()
+                .orElse(text -> text);
+    }
+
+    private Optional<ReplaceText> createReplaceTextInstance() {
         try {
-            this.replaceText = new ItemsAdderHolder();
+            return Optional.of(new ItemsAdderHolder());
         } catch (ClassNotFoundException e) {
-            this.replaceText = text -> text;
+            getLogger().warning("ItemsAdder not found. Using default text replacement.");
+            return Optional.empty();
         }
     }
 
     @Override
     public void onDisable() {
-        PacketEvents.getAPI().terminate();
+        Optional.ofNullable(PacketEvents.getAPI()).ifPresent(PacketEventsAPI::terminate);
+        instance = null;
+    }
+
+    public static synchronized HologramAPI getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("HologramAPI has not been initialized");
+        }
+        return instance;
     }
 }
