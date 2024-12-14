@@ -118,6 +118,8 @@ public class HologramManager {
                 .setScale(options.scale(), options.scale(), options.scale())
                 .setBillboard(Display.Billboard.VERTICAL)
                 .setAlignment(TextDisplay.TextAlignment.CENTER);
+
+        hologram.update();
     }
 
     public void spawn(TextHologram textHologram, Location location) {
