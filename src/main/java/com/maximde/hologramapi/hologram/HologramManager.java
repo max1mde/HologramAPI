@@ -4,7 +4,6 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import com.maximde.hologramapi.HologramAPI;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -20,10 +18,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-@AllArgsConstructor
 public class HologramManager {
-
-    private final Plugin plugin;
 
     @Getter
     private final Map<TextHologram, BukkitRunnable> hologramAnimations = new ConcurrentHashMap<>();
@@ -173,7 +168,7 @@ public class HologramManager {
             }
         };
 
-        animation.runTaskTimerAsynchronously(this.plugin, textAnimation.getDelay(), textAnimation.getSpeed());
+        animation.runTaskTimerAsynchronously(HologramAPI.getInstance().get(), textAnimation.getDelay(), textAnimation.getSpeed());
         return animation;
     }
 }

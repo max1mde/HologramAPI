@@ -163,25 +163,6 @@ public class TextHologram {
         task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance().get(), this::updateAffectedPlayers, 20L, updateTaskPeriod);
     }
 
-    /**
-     * Use HologramManager#spawn(TextHologram.class, Location.class); instead!
-     */
-    @Deprecated
-    public void spawn(Location location) {
-        this.location = location;
-        entityID = ThreadLocalRandom.current().nextInt(4000, Integer.MAX_VALUE);
-        WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(
-                entityID, Optional.of(UUID.randomUUID()), EntityTypes.TEXT_DISPLAY,
-                new Vector3d(location.getX(), location.getY() + 1, location.getZ()), 0f, 0f, 0f, 0, Optional.empty()
-        );
-        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance().get(), () -> {
-            updateAffectedPlayers();
-            sendPacket(packet);
-            this.dead = false;
-        });
-        update();
-    }
-
     public void attach(TextHologram textHologram, int entityID) {
         int[] hologramToArray = { textHologram.getEntityID() };
         WrapperPlayServerSetPassengers attachPacket = new WrapperPlayServerSetPassengers(entityID, hologramToArray);

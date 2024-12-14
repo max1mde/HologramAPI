@@ -20,7 +20,6 @@ import java.util.logging.Level;
 
 public final class HologramAPI extends JavaPlugin {
 
-    @Getter
     private static HologramManager manager;
 
     @Getter
@@ -77,7 +76,7 @@ public final class HologramAPI extends JavaPlugin {
 
         playerManager = PacketEvents.getAPI().getPlayerManager();
 
-        manager = new HologramManager(this);
+        manager = new HologramManager();
         new Metrics(this, 19375);
 
         try {
