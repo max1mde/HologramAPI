@@ -160,19 +160,19 @@ public class TextHologram {
 
     private void startRunnable() {
         if (task != null) return;
-        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance().get(), this::updateAffectedPlayers, 20L, updateTaskPeriod);
+        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, updateTaskPeriod);
     }
 
     public void attach(TextHologram textHologram, int entityID) {
         int[] hologramToArray = { textHologram.getEntityID() };
         WrapperPlayServerSetPassengers attachPacket = new WrapperPlayServerSetPassengers(entityID, hologramToArray);
-        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance().get(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
             sendPacket(attachPacket);
         });
     }
 
     public TextHologram update() {
-        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance().get(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
             updateAffectedPlayers();
             TextDisplayMeta meta = createMeta();
             sendPacket(meta.createPacket());
@@ -313,7 +313,7 @@ public class TextHologram {
     }
 
     private String replaceFontImages(String string) {
-        return HologramAPI.getReplaceText().replace(string);
+        return HologramAPI.getInstance().getReplaceText().replace(string);
     }
 
     private void updateAffectedPlayers() {
@@ -321,7 +321,7 @@ public class TextHologram {
                 .filter(player -> player.isOnline() && (player.getWorld() != this.location.getWorld() || player.getLocation().distance(this.location) > 20))
                 .forEach(player -> {
                     WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(this.entityID);
-                    HologramAPI.getPlayerManager().sendPacket(player, packet);
+                    HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet);
                 });
 
         if (this.renderMode == RenderMode.VIEWER_LIST) return;
@@ -338,6 +338,6 @@ public class TextHologram {
 
     private void sendPacket(PacketWrapper<?> packet) {
         if (this.renderMode == RenderMode.NONE) return;
-        viewers.forEach(player -> HologramAPI.getPlayerManager().sendPacket(player, packet));
+        viewers.forEach(player -> HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet));
     }
 }

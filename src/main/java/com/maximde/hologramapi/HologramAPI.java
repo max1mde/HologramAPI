@@ -20,69 +20,67 @@ import java.util.logging.Level;
 
 public final class HologramAPI extends JavaPlugin {
 
-    private static HologramManager manager;
-
     @Getter
-    private static ReplaceText replaceText;
-
-    @Getter
-    private static PlayerManager playerManager;
-
     private static HologramAPI instance;
 
-    public static Optional<HologramAPI> getInstance() {
-        if (instance == null) {
-            Bukkit.getLogger().log(Level.SEVERE, "Tried to access the HologramAPI but it was not initialized yet! Add depends 'HologramAPI' to your plugin.yml and make sure the plugin itself is on the server! Otherwise use HologramAPI#getInstance(Plugin <your plugin instance>) if you are shading the API!");
+    @Getter
+    private ReplaceText replaceText;
+
+    @Getter
+    private PlayerManager playerManager;
+
+    private HologramManager hologramManager;
+
+    public static Optional<HologramManager> getManager() {
+        if (instance == null || instance.hologramManager == null) {
+            Bukkit.getLogger().log(Level.SEVERE, "HologramAPI has not been initialized yet. Make sure to include 'HologramAPI' as a dependency in your plugin.yml and that the plugin is enabled!");
+            return Optional.empty();
         }
-        return Optional.ofNullable(instance);
+        return Optional.of(instance.hologramManager);
     }
 
-    public static Optional<HologramAPI> getInstance(Plugin plugin) {
-        if (plugin == null) return Optional.empty();
-
-        if(instance != null) return Optional.of(instance);
-
-        if (plugin instanceof JavaPlugin javaPlugin) {
-            javaPlugin.getLogger().log(Level.INFO, "Initializing HologramAPI from shaded plugin context.");
-            instance = new HologramAPI();
-            instance.onLoad();
-            instance.onEnable();
-            return Optional.of(instance);
+    public static Optional<HologramManager> getManager(Plugin plugin) {
+        if (!(plugin instanceof JavaPlugin)) {
+            Bukkit.getLogger().log(Level.SEVERE, "Unable to initialize HologramAPI: Provided plugin is not a valid JavaPlugin.");
+            return Optional.empty();
         }
 
-        Bukkit.getLogger().log(Level.SEVERE, "Unable to initialize HologramAPI: Provided plugin is not a valid JavaPlugin.");
-        return Optional.empty();
+        if (instance != null && instance.hologramManager != null) {
+            return Optional.of(instance.hologramManager);
+        }
+
+        Bukkit.getLogger().log(Level.INFO, "Initializing HologramAPI from a shaded plugin context.");
+        HologramAPI api = new HologramAPI();
+        api.onLoad();
+        api.onEnable();
+        return Optional.ofNullable(api.hologramManager);
     }
 
     @Override
     public void onLoad() {
+        instance = this;
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
-        PacketEvents.getAPI().getSettings().reEncodeByDefault(false)
-                .checkForUpdates(false)
-                .bStats(true);
         PacketEvents.getAPI().load();
     }
 
     @Override
     public void onEnable() {
-        if(instance == null) instance = this;
         PacketEvents.getAPI().init();
 
         SpigotEntityLibPlatform platform = new SpigotEntityLibPlatform(this);
-        APIConfig settings = new APIConfig(PacketEvents.getAPI())
+        APIConfig config = new APIConfig(PacketEvents.getAPI())
                 .usePlatformLogger();
+        EntityLib.init(platform, config);
 
-        EntityLib.init(platform, settings);
+        this.playerManager = PacketEvents.getAPI().getPlayerManager();
+        this.hologramManager = new HologramManager();
 
-        playerManager = PacketEvents.getAPI().getPlayerManager();
-
-        manager = new HologramManager();
         new Metrics(this, 19375);
 
         try {
-            replaceText = new ItemsAdderHolder();
-        } catch (ClassNotFoundException exception) {
-            replaceText = s -> s;
+            this.replaceText = new ItemsAdderHolder();
+        } catch (ClassNotFoundException e) {
+            this.replaceText = text -> text;
         }
     }
 

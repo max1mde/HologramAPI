@@ -117,7 +117,7 @@ public class HologramManager {
                 textHologram.getEntityID(), Optional.of(UUID.randomUUID()), EntityTypes.TEXT_DISPLAY,
                 new Vector3d(location.getX(), location.getY() + 1, location.getZ()), 0f, 0f, 0f, 0, Optional.empty()
         );
-        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance().get(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
             textHologram.getInternalAccess().updateAffectedPlayers();
             textHologram.getInternalAccess().sendPacket(packet);
             textHologram.getInternalAccess().setDead(false);
@@ -168,7 +168,7 @@ public class HologramManager {
             }
         };
 
-        animation.runTaskTimerAsynchronously(HologramAPI.getInstance().get(), textAnimation.getDelay(), textAnimation.getSpeed());
+        animation.runTaskTimerAsynchronously(HologramAPI.getInstance(), textAnimation.getDelay(), textAnimation.getSpeed());
         return animation;
     }
 }
