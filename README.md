@@ -111,6 +111,9 @@ hologramManager.spawn(hologram, location);
 ```
 
 ### Leaderboard Creation
+
+<img src="https://github.com/user-attachments/assets/68b8ded4-c307-44e9-a746-6777ff9b6205" width="400">
+
 ```java
 Map<Integer, String> leaderboardData = new LinkedHashMap<>() {{
     put(1, "PlayerOne:1000");
@@ -122,7 +125,7 @@ Map<Integer, String> leaderboardData = new LinkedHashMap<>() {{
 TextHologram leaderboard = hologramManager.generateLeaderboard(
     location,
     leaderboardData,
-    HologramManager.LeaderboardOptions.builder()
+    HologramManager.LeaderboardOptions.builder() // There are even more option in this builder like the title and footer design
         .title("Top Players")
         .showEmptyPlaces(true)
         .scale(1.2f)
