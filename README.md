@@ -76,6 +76,8 @@ public void onEnable() {
 }
 ```
 
+If you are shading the library use `HologramAPI.getManager(<Your plugin instance>)` instead!
+
 ### Hologram Rendering Modes
 ```java
 // Different rendering modes available
