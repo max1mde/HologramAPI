@@ -127,7 +127,7 @@ Map<Integer, String> leaderboardData = new LinkedHashMap<>() {{
 TextHologram leaderboard = hologramManager.generateLeaderboard(
     location,
     leaderboardData,
-    HologramManager.LeaderboardOptions.builder() // There are even more option in this builder like the title and footer design
+    HologramManager.LeaderboardOptions.builder() // There are even more options in this builder like the title and footer design
         .title("Top Players")
         .showEmptyPlaces(true)
         .scale(1.2f)
