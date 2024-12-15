@@ -22,7 +22,6 @@ import java.util.logging.Level;
 
 public final class HologramAPI extends JavaPlugin {
 
-    @Getter
     private static volatile HologramAPI instance;
 
     @Getter

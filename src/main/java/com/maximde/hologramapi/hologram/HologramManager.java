@@ -35,20 +35,20 @@ public class HologramManager {
         private String title = "Leaderboard";
 
         @Builder.Default
-        private String titleFormat = "<gradient:gold:yellow>▛▀▀ {title} ▀▀▜</gradient>";
-
-        @Builder.Default
         private String[] placeFormats = new String[] {
-                "<gold><bold>{place}. </bold>{name} <gray>{score}</gray>",
-                "<gray><bold>{place}. </bold>{name} <dark_gray>{score}</dark_gray>",
-                "<red><bold>{place}. </bold>{name} <dark_red>{score}</dark_red>"
+                "<color:#fdcc00><bold>1. </bold>{name}</color> <gray>{score}</gray> <white>{suffix}</white>",
+                "<color:#dcdcdc><bold>2. </bold>{name}</color> <gray>{score}</gray> <white>{suffix}</white>",
+                "<color:#e65f2f><bold>3. </bold>{name}</color> <gray>{score}</gray> <white>{suffix}</white>"
         };
 
         @Builder.Default
-        private String defaultPlaceFormat = "<yellow><bold>{place}. </bold>{name} <gray>{score}</gray>";
+        private String defaultPlaceFormat = "<color:#ffb486><bold>{place}. </bold>{name}</color> <gray>{score}</gray> <white>{suffix}</white>";
 
         @Builder.Default
-        private String footerFormat = "<gradient:gold:yellow>▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟</gradient>";
+        private String titleFormat = "<gradient:#ff6000:#ffa42a>▛▀▀▀▀ {title} ▀▀▀▀▜</gradient>";
+
+        @Builder.Default
+        private String footerFormat = "<color:#ff6000>▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟</color>";
 
         @Builder.Default
         private String suffix = "";
@@ -116,6 +116,7 @@ public class HologramManager {
 
         hologram.setMiniMessageText(leaderboardText.toString())
                 .setScale(options.scale(), options.scale(), options.scale())
+                .setBackgroundColor(520093695)
                 .setBillboard(Display.Billboard.VERTICAL)
                 .setAlignment(TextDisplay.TextAlignment.CENTER);
 

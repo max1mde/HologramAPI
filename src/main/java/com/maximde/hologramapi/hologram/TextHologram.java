@@ -39,7 +39,7 @@ public class TextHologram {
     @Getter @Accessors(chain = true)
     private long updateTaskPeriod = 20L * 3;
     @Getter @Accessors(chain = true)
-    private double nearbyEntityScanningDistance = 40.0;
+    private double nearbyEntityScanningDistance = 30.0;
     @Getter
     private final String id;
 
@@ -84,7 +84,7 @@ public class TextHologram {
     private final List<Player> viewers = new CopyOnWriteArrayList<>();
 
     @Getter
-    private boolean dead = false;
+    private boolean dead = true;
 
     @Getter
     private BukkitTask task;
@@ -160,7 +160,7 @@ public class TextHologram {
 
     private void startRunnable() {
         if (task != null) return;
-        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 20L, updateTaskPeriod);
+        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 60L, updateTaskPeriod);
     }
 
     public void attach(TextHologram textHologram, int entityID) {
@@ -317,27 +317,46 @@ public class TextHologram {
     }
 
     private void updateAffectedPlayers() {
-        viewers.stream()
+        List<Player> newPlayers = new ArrayList<>();
+        List<Player> toRemove = viewers.stream()
                 .filter(player -> player.isOnline() && (player.getWorld() != this.location.getWorld() || player.getLocation().distance(this.location) > 20))
-                .forEach(player -> {
+                .peek(player -> {
                     WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(this.entityID);
                     HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet);
-                });
+                })
+                .toList();
+        viewers.removeAll(toRemove);
+
 
         if (this.renderMode == RenderMode.VIEWER_LIST) return;
 
         if (this.renderMode == RenderMode.ALL) {
-            this.addAllViewers(new ArrayList<>(Bukkit.getOnlinePlayers()));
+            newPlayers.addAll(new ArrayList<>(Bukkit.getOnlinePlayers()));
         } else if (this.renderMode == RenderMode.NEARBY) {
             this.location.getWorld().getNearbyEntities(this.location, nearbyEntityScanningDistance, nearbyEntityScanningDistance, nearbyEntityScanningDistance)
                     .stream()
                     .filter(entity -> entity instanceof Player)
-                    .forEach(entity -> this.viewers.add((Player) entity));
+                    .forEach(entity -> newPlayers.add((Player) entity));
         }
+        newPlayers.removeAll(this.viewers);
+        if(!dead && entityID != 0) {
+            WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(
+                    this.entityID, Optional.of(UUID.randomUUID()), EntityTypes.TEXT_DISPLAY,
+                    new Vector3d(location.getX(), location.getY() + 1, location.getZ()), 0f, 0f, 0f, 0, Optional.empty()
+            );
+            sendPacket(packet, newPlayers);
+            sendPacket(createMeta().createPacket(), newPlayers);
+        }
+        this.viewers.addAll(newPlayers);
     }
 
     private void sendPacket(PacketWrapper<?> packet) {
         if (this.renderMode == RenderMode.NONE) return;
         viewers.forEach(player -> HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet));
+    }
+
+    private void sendPacket(PacketWrapper<?> packet, List<Player> players) {
+        if (this.renderMode == RenderMode.NONE) return;
+        players.forEach(player -> HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet));
     }
 }

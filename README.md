@@ -14,7 +14,10 @@
 - Minimessage support
 - Packet based
 - Per player holograms
-- ItemsAdder emoji support
+- Dynamic leaderboard creation
+- Advanced hologram customization
+- Attachment and parenting support
+- Flexible rendering modes
 
 # Installation
 
@@ -57,77 +60,119 @@ depend:
 # Example/Showcase Plugin
 https://github.com/max1mde/ExampleHologramPlugin
 
+# First Steps
 
-# First steps
----------------------------------------------------------------------
-### Creating a hologram
-
-> Display.Billboard.CENTER = the hologram rotates to the player like a nametag (default value)<br>
-> Display.Billboard.FIXED = The holograms rotation is fixed<br>
-> Display.Billboard.VERTICAL = The hologram only rotates to the left and right (is horizontally fixed)<br>
-> Display.Billboard.HORIZONTAL = The hologram only rotates up and down (is vertically fixed)<br>
-
+### Initializing HologramManager
 ```java
-TextHologram hologram = new TextHologram("your_hologram_id")
-                .setMiniMessageText("<aqua>Hello world!")
-                .setSeeThroughBlocks(false)
-                .setBillboard(Display.Billboard.VERTICAL)
-                .setShadow(true)
-                .setScale(1.5F,1.5F,1.5F)
-                .setTextOpacity((byte) 200)
-                .setBackgroundColor(Color.fromARGB(0/*Opacity*/, 255/*Red*/, 236/*Green*/, 222/*Blue*/).asARGB()); // You can use the https://htmlcolorcodes.com/color-picker/ to get the RGB color you want!
+private HologramManager hologramManager;
+
+@Override
+public void onEnable() {
+    hologramManager = HologramAPI.getManager().orElse(null);
+    if (hologramManager == null) {
+        getLogger().severe("Failed to initialize HologramAPI manager.");
+        return;
+    }
+}
 ```
 
-Spawn and remove your hologram
-```
-HologramAPI.getHologram().spawn(hologram, <location>);
-HologramAPI.getHologram().remove(hologram);
-```
-
-You can change the attributes of the hologram afterwards but you always **need** to call the TextHologram#**update()** method to apply the changes to the hologram
-
+### Hologram Rendering Modes
 ```java
-hologram.setSize(0.5F,0.5F,0.5F); // The hologram is now 50% smaller
-hologram.setSize(5,5,5); // And now 5 times bigger
-hologram.setMiniMessageText("<red>Updated text!")
-hologram.update();
+// Different rendering modes available
+TextHologram hologram = new TextHologram("example", RenderMode.NEARBY);
+// Modes include:
+// - NEARBY: Render for players near the hologram
+// - ALL: Render for all online players
+// - VIEWER_LIST: Render only for manually added viewers
+// - NONE: Do not render
 ```
 
-You can also kill the hologram what only kills the entity not the data in that TextHologram object
-This means you can just call the TextHologram#spawn() method
-```java
-hologram.kill();
-hologram.spawn(LOCATION);
-```
----------------------------------------------------------------------
-### Animations
+> [!NOTE]  
+> Display.Billboard.CENTER = the hologram rotates to the player like a nametag (default value)
+> Display.Billboard.FIXED = The holograms rotation is fixed
+> Display.Billboard.VERTICAL = The hologram only rotates to the left and right (is horizontally fixed)
+> Display.Billboard.HORIZONTAL = The hologram only rotates up and down (is vertically fixed)
 
-**Text animation**
-This animation changes the text content every _x_ ticks after _x_ ticks
+### Hologram Creation
 ```java
-TextAnimation animation = new TextAnimation()
-                        .addFrame(ChatColor.RED + "First frame")
-                        .addFrame("Second frame")
-                        .addFrame("Third frame\nSecond line")
-                        .addFrame("Last frame");
-```
-Default values of speed and delay are 20 ticks (1 second)
-You can change these values like that:
-```java
-animation.setDelay(20 * 5); // The animation starts after 5 seconds
-animation.setSpeed(20 * 3); // The text gets updated every 3 seconds
+TextHologram hologram = new TextHologram("unique_id")
+    .setMiniMessageText("<aqua>Hello world!")
+    .setSeeThroughBlocks(false)
+    .setBillboard(Display.Billboard.VERTICAL)
+    .setShadow(true)
+    .setScale(1.5F, 1.5F, 1.5F)
+    .setTextOpacity((byte) 200)
+    .setBackgroundColor(Color.fromARGB(60, 255, 236, 222).asARGB())
+    .setAlignment(TextDisplay.TextAlignment.CENTER)
+    .setViewRange(1.0)
+    .setMaxLineWidth(200);
+
+hologramManager.spawn(hologram, location);
 ```
 
-**Apply the animation on a hologram**
-> If the hologram already has an active animation the new one will be played and the previous cancelled
+### Leaderboard Creation
 ```java
-HologramAPI.getHologramManager().applyAnimation(hologram, animation);
+Map<Integer, String> leaderboardData = new LinkedHashMap<>() {{
+    put(1, "PlayerOne:1000");
+    put(2, "PlayerTwo:950");
+    put(3, "PlayerThree:900");
+    // ... more entries
+}};
+
+TextHologram leaderboard = hologramManager.generateLeaderboard(
+    location,
+    leaderboardData,
+    HologramManager.LeaderboardOptions.builder()
+        .title("Top Players")
+        .showEmptyPlaces(true)
+        .scale(1.2f)
+        .maxDisplayEntries(10)
+        .suffix("kills")
+        .build()
+);
+
+/*
+ Update the leaderboard later if needed
+ */
+hologramManager.updateLeaderboard(
+    leaderboard, 
+    updatedData, 
+    HologramManager.LeaderboardOptions.builder().build()
+);
 ```
 
-**Stop an animation**
+### Setting a hologram as a passenger
 ```java
-HologramAPI.getHologramManager().cancelAnimation(hologram);
+hologramManager.attach(hologram, parentEntityId);
 ```
----------------------------------------------------------------------
+
+### Managing Hologram Viewers
+```java
+hologram.addViewer(player);
+hologram.removeViewer(player);
+hologram.removeAllViewers();
+
+// The players who see the hologram
+List<Player> currentViewers = hologram.getViewers();
+```
+
+### Advanced Transformations
+```java
+hologram.setTranslation(0, 1, 0) 
+    .setLeftRotation(0, 1, 0, 0) 
+    .setRightRotation(0, 1, 0, 0)
+    .update();  // Apply changes (make them visible to the player)
+```
+
+### Hologram Retrieval and Management
+```java
+Optional<TextHologram> retrievedHologram = hologramManager.getHologram("unique_id");
+
+hologramManager.remove("unique_id");
+
+hologramManager.remove(hologram);
+
+hologramManager.removeAll();
+```
 
 Contributions to this repo or the example plugin are welcome!
