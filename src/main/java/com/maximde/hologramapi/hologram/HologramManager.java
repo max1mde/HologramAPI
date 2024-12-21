@@ -123,7 +123,7 @@ public class HologramManager {
         hologram.update();
     }
 
-    public void spawn(TextHologram textHologram, Location location) {
+    public TextHologram spawn(TextHologram textHologram, Location location) {
         textHologram.getInternalAccess().setLocation(location);
         textHologram.getInternalAccess().setEntityId(ThreadLocalRandom.current().nextInt(4000, Integer.MAX_VALUE));
         WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(
@@ -137,6 +137,7 @@ public class HologramManager {
         });
         textHologram.update();
         register(textHologram);
+        return textHologram;
     }
 
     public void attach(TextHologram textHologram, int entityID) {
@@ -144,10 +145,17 @@ public class HologramManager {
     }
 
     public boolean register(TextHologram textHologram) {
-        if (textHologram == null) return false;
+        if (textHologram == null) {
+            return false;
+        }
+        if (hologramsMap.containsKey(textHologram.getId())) {
+            Bukkit.getLogger().severe("Error: Hologram with ID " + textHologram.getId() + " is already registered.");
+            return false;
+        }
         hologramsMap.put(textHologram.getId(), textHologram);
         return true;
     }
+
 
     public boolean remove(TextHologram textHologram) {
         return textHologram != null && remove(textHologram.getId());
@@ -202,5 +210,24 @@ public class HologramManager {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Creates a copy of an existing hologram at a new location
+     * @param source The hologram to copy from
+     * @param id The ID for the new hologram
+     * @return The newly created hologram copy
+     */
+    public TextHologram copyHologram(TextHologram source, String id) {
+        return this.spawn(source.getInternalAccess().copy(id), source.getLocation());
+    }
+
+    /**
+     * Creates a copy of an existing hologram at a new location
+     * @param source The hologram to copy from
+     * @return The newly created hologram copy
+     */
+    public TextHologram copyHologram(TextHologram source) {
+        return this.spawn(source.getInternalAccess().copy(), source.getLocation());
     }
 }

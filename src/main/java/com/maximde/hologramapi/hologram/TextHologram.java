@@ -31,6 +31,7 @@ import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class TextHologram {
@@ -100,11 +101,13 @@ public class TextHologram {
          * Use TextHologram#telport(Location) if you want to move the hologram instead!
          * @param location
          */
-        void setLocation(Location location);
-        void setDead(boolean dead);
-        void setEntityId(int entityId);
-        void sendPacket(PacketWrapper<?> packet);
-        void updateAffectedPlayers();
+        TextHologram setLocation(Location location);
+        TextHologram setDead(boolean dead);
+        TextHologram setEntityId(int entityId);
+        TextHologram sendPacket(PacketWrapper<?> packet);
+        TextHologram updateAffectedPlayers();
+        TextHologram copy(String id);
+        TextHologram copy();
     }
 
 
@@ -134,34 +137,84 @@ public class TextHologram {
         this.internalAccess = new InternalSetters();
     }
 
+    /**
+     * Creates a copy of this hologram with a new ID.
+     * The new ID will be the original ID with '_copy_<random number>' appended.
+     * @return A new TextHologram instance with copied properties
+     */
+    private TextHologram copy() {
+        int randomNumber = ThreadLocalRandom.current().nextInt(100000);
+        return this.copy(this.id + "_copy_" + randomNumber);
+    }
+
+    /**
+     * Creates a copy of this hologram with a new ID.
+     *
+     * @return A new TextHologram instance with copied properties
+     */
+    private TextHologram copy(String id) {
+        TextHologram copy = new TextHologram(id, this.renderMode);
+        copy.text = this.text;
+        copy.scale = new Vector3f(this.scale);
+        copy.translation = new Vector3f(this.translation);
+        copy.rightRotation = new Quaternion4f(this.rightRotation.getX(), this.rightRotation.getY(),
+                this.rightRotation.getZ(), this.rightRotation.getW());
+        copy.leftRotation = new Quaternion4f(this.leftRotation.getX(), this.leftRotation.getY(),
+                this.leftRotation.getZ(), this.leftRotation.getW());
+        copy.billboard = this.billboard;
+        copy.interpolationDurationRotation = this.interpolationDurationRotation;
+        copy.interpolationDurationTransformation = this.interpolationDurationTransformation;
+        copy.viewRange = this.viewRange;
+        copy.shadow = this.shadow;
+        copy.maxLineWidth = this.maxLineWidth;
+        copy.backgroundColor = this.backgroundColor;
+        copy.seeThroughBlocks = this.seeThroughBlocks;
+        copy.alignment = this.alignment;
+        copy.textOpacity = this.textOpacity;
+        copy.updateTaskPeriod = this.updateTaskPeriod;
+        copy.nearbyEntityScanningDistance = this.nearbyEntityScanningDistance;
+        return copy;
+    }
+
     private class InternalSetters implements Internal {
         @Override
-        public void setLocation(Location location) {
+        public TextHologram setLocation(Location location) {
             if (location == null) {
                 throw new IllegalArgumentException("Location cannot be null");
             }
             TextHologram.this.location = location;
+            return TextHologram.this;
         }
 
         @Override
-        public void setDead(boolean dead) {
+        public TextHologram setDead(boolean dead) {
             TextHologram.this.dead = dead;
+            return TextHologram.this;
         }
 
         @Override
-        public void setEntityId(int entityId) {
+        public TextHologram setEntityId(int entityId) {
             TextHologram.this.entityID = entityId;
+            return TextHologram.this;
         }
 
         @Override
-        public void sendPacket(PacketWrapper<?> packet) {
+        public TextHologram sendPacket(PacketWrapper<?> packet) {
             TextHologram.this.sendPacket(packet);
+            return TextHologram.this;
         }
 
         @Override
-        public void updateAffectedPlayers() {
+        public TextHologram updateAffectedPlayers() {
             TextHologram.this.updateAffectedPlayers();
+            return TextHologram.this;
         }
+
+        @Override
+        public TextHologram copy(String id) { TextHologram.this.copy(id); return TextHologram.this;}
+
+        @Override
+        public TextHologram copy() { TextHologram.this.copy(); return TextHologram.this;}
     }
 
     private void validateId(String id) {
