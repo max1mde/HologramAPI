@@ -31,7 +31,6 @@ import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public class TextHologram {
@@ -109,6 +108,13 @@ public class TextHologram {
     }
 
 
+    /**
+     * Creates a new text hologram with the specified ID and render mode.
+     *
+     * @param id Unique identifier for this hologram. Cannot contain spaces.
+     * @param renderMode Determines how and to whom the hologram is rendered
+     * @throws IllegalArgumentException if id contains spaces
+     */
     public TextHologram(String id, RenderMode renderMode) {
         this.renderMode = renderMode;
         validateId(id);
@@ -117,6 +123,12 @@ public class TextHologram {
         this.internalAccess = new InternalSetters();
     }
 
+    /**
+     * Creates a new text hologram with the specified ID and nearby render mode.
+     *
+     * @param id Unique identifier for this hologram. Cannot contain spaces.
+     * @throws IllegalArgumentException if id contains spaces
+     */
     public TextHologram(String id) {
         this(id, RenderMode.NEARBY);
         this.internalAccess = new InternalSetters();
@@ -163,6 +175,12 @@ public class TextHologram {
         task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 60L, updateTaskPeriod);
     }
 
+    /**
+     * Attaches this hologram to another entity, making it ride the target entity.
+     *
+     * @param textHologram The hologram to attach
+     * @param entityID The entity ID to attach the hologram to
+     */
     public void attach(TextHologram textHologram, int entityID) {
         int[] hologramToArray = { textHologram.getEntityID() };
         WrapperPlayServerSetPassengers attachPacket = new WrapperPlayServerSetPassengers(entityID, hologramToArray);
@@ -171,6 +189,10 @@ public class TextHologram {
         });
     }
 
+    /**
+     * Sends update packets to all viewers.
+     * Should be called after making any changes to the hologram object.
+     */
     public TextHologram update() {
         Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
             updateAffectedPlayers();
