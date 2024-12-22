@@ -117,8 +117,8 @@ public class HologramManager {
         hologram.setMiniMessageText(leaderboardText.toString())
                 .setScale(options.scale(), options.scale(), options.scale())
                 .setBackgroundColor(520093695)
-                .setBillboard(Display.Billboard.VERTICAL)
-                .setAlignment(TextDisplay.TextAlignment.CENTER);
+                .setAlignment(TextDisplay.TextAlignment.CENTER)
+                .setBillboard(Display.Billboard.VERTICAL);
 
         hologram.update();
     }
@@ -223,7 +223,7 @@ public class HologramManager {
      * @return The newly created hologram copy
      */
     public TextHologram copyHologram(TextHologram source, String id) {
-        return this.spawn(source.getInternalAccess().copy(id), source.getLocation());
+        return this.spawn(source.copy(id), source.getLocation());
     }
 
     /**
@@ -232,6 +232,6 @@ public class HologramManager {
      * @return The newly created hologram copy
      */
     public TextHologram copyHologram(TextHologram source) {
-        return this.spawn(source.getInternalAccess().copy(), source.getLocation());
+        return this.spawn(source.copy(), source.getLocation());
     }
 }
