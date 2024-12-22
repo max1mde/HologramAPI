@@ -8,6 +8,26 @@
 <p>Leave a :star: if you like this library :octocat:</p>
 </div>
 
+<div>
+<h3>Contents</h3>
+• <a href="#features">Features</a><br>
+• <a href="#installation">Installation</a><br>
+• <a href="#exampleshowcase-plugin">Example Plugin</a>
+<br>
+<br>
+<details>
+<summary><a href="#first-steps">First Steps</a></summary>
+&nbsp;&nbsp;&nbsp;• <a href="#initializing-hologrammanager">Initializing Manager</a><br>
+&nbsp;&nbsp;&nbsp;• <a href="#hologram-rendering-modes">Rendering Modes</a><br>
+&nbsp;&nbsp;&nbsp;• <a href="#hologram-creation">Creation</a><br>
+&nbsp;&nbsp;&nbsp;• <a href="#leaderboard-creation">Leaderboards</a><br>
+&nbsp;&nbsp;&nbsp;• <a href="#setting-a-hologram-as-a-passenger">Passengers</a><br>
+&nbsp;&nbsp;&nbsp;• <a href="#managing-hologram-viewers">Viewers</a><br>
+&nbsp;&nbsp;&nbsp;• <a href="#advanced-transformations">Transformations</a><br>
+&nbsp;&nbsp;&nbsp;• <a href="#hologram-retrieval-and-management">Management</a>
+</details>
+</div>
+
 # Features
 - Text animations
 - Minimessage support
