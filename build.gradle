@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.maximde'
-version = '1.5.0'
+version = '1.5.1'
 
 repositories {
 
@@ -24,8 +24,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
     compileOnly "org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT"
     compileOnly 'com.github.retrooper:packetevents-spigot:2.7.0'
