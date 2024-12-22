@@ -4,7 +4,7 @@
 <a href="https://github.com/max1mde/ExampleHologramPlugin"><img src="https://img.shields.io/badge/Example%20plugin-13B8E1" alt="Version"></a>
 <a href="https://jitpack.io/#max1mde/HologramLib"><img src="https://jitpack.io/v/max1mde/HologramLib.svg" alt="jitpack"></a> 
 <a href="https://github.com/max1mde/HologramLib/releases"><img src="https://img.shields.io/github/downloads/max1mde/HologramLib/total.svg" alt="Downloads"></a>  
-<img width="900px" src="https://github.com/user-attachments/assets/ea1d3b5f-ab0e-4cfb-884c-164232a1a6c7">
+<img width="900px" src="https://github.com/user-attachments/assets/75e2fce6-0be0-4621-be38-ff1d0cb5ca0a">
 <p>Leave a :star: if you like this library :octocat:</p>
 </div>
 
