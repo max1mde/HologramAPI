@@ -10,7 +10,6 @@
 
 <div>
 <h3>Contents</h3>
-• <a href="#features">Features</a><br>
 • <a href="#installation">Installation</a><br>
 • <a href="#exampleshowcase-plugin">Example Plugin</a>
 <br>
