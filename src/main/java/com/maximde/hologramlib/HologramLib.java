@@ -1,12 +1,12 @@
-package com.maximde.hologramapi;
+package com.maximde.hologramlib;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.PacketEventsAPI;
 import com.github.retrooper.packetevents.manager.player.PlayerManager;
-import com.maximde.hologramapi.bstats.Metrics;
-import com.maximde.hologramapi.hologram.HologramManager;
-import com.maximde.hologramapi.utils.ItemsAdderHolder;
-import com.maximde.hologramapi.utils.ReplaceText;
+import com.maximde.hologramlib.bstats.Metrics;
+import com.maximde.hologramlib.hologram.HologramManager;
+import com.maximde.hologramlib.utils.ItemsAdderHolder;
+import com.maximde.hologramlib.utils.ReplaceText;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -20,25 +20,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Optional;
 import java.util.logging.Level;
 
-public final class HologramAPI extends JavaPlugin {
+@Getter
+public final class HologramLib extends JavaPlugin {
 
-    private static volatile HologramAPI instance;
+    private static volatile HologramLib instance;
 
-    @Getter
     private ReplaceText replaceText;
-
-    @Getter
     private PlayerManager playerManager;
-
-    @Getter
     private HologramManager hologramManager;
 
     public static Optional<HologramManager> getManager() {
         return Optional.ofNullable(getInstance().hologramManager)
                 .or(() -> {
                     Bukkit.getLogger().log(Level.SEVERE,
-                            "HologramAPI has not been initialized yet. " +
-                                    "Ensure 'HologramAPI' is included as a dependency in your plugin.yml.");
+                            "HologramLib has not been initialized yet. " +
+                                    "Ensure 'HologramLib' is included as a dependency in your plugin.yml.");
                     return Optional.empty();
                 });
     }
@@ -47,7 +43,7 @@ public final class HologramAPI extends JavaPlugin {
     public static Optional<HologramManager> getManager(Plugin plugin) {
         if (!(plugin instanceof JavaPlugin)) {
             Bukkit.getLogger().log(Level.SEVERE,
-                    "Unable to initialize HologramAPI: Provided plugin is not a valid JavaPlugin.");
+                    "Unable to initialize HologramLib: Provided plugin is not a valid JavaPlugin.");
             return Optional.empty();
         }
 
@@ -55,12 +51,12 @@ public final class HologramAPI extends JavaPlugin {
             return Optional.of(instance.hologramManager);
         }
 
-        synchronized (HologramAPI.class) {
+        synchronized (HologramLib.class) {
             if (instance == null) {
                 Bukkit.getLogger().log(Level.INFO,
-                        "Initializing HologramAPI from a shaded plugin context.");
+                        "Initializing HologramLib from a shaded plugin context.");
 
-                HologramAPI api = new HologramAPI();
+                HologramLib api = new HologramLib();
                 api.onLoad();
                 api.onEnable();
 
@@ -92,7 +88,7 @@ public final class HologramAPI extends JavaPlugin {
             initializeMetrics();
             initializeReplaceText();
         } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "Failed to enable HologramAPI", e);
+            getLogger().log(Level.SEVERE, "Failed to enable HologramLib", e);
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }
@@ -137,9 +133,9 @@ public final class HologramAPI extends JavaPlugin {
         instance = null;
     }
 
-    public static synchronized HologramAPI getInstance() {
+    public static synchronized HologramLib getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("HologramAPI has not been initialized");
+            throw new IllegalStateException("HologramLib has not been initialized");
         }
         return instance;
     }

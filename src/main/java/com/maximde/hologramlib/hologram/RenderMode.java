@@ -1,4 +1,4 @@
-package com.maximde.hologramapi.hologram;
+package com.maximde.hologramlib.hologram;
 
 /**
  * Defines how a hologram should be rendered and to which players.

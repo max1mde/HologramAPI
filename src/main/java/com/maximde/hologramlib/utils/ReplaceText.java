@@ -1,4 +1,4 @@
-package com.maximde.hologramapi.utils;
+package com.maximde.hologramlib.utils;
 
 public interface ReplaceText {
     String replace(String s);

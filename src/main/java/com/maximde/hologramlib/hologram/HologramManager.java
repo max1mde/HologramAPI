@@ -1,9 +1,9 @@
-package com.maximde.hologramapi.hologram;
+package com.maximde.hologramlib.hologram;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
-import com.maximde.hologramapi.HologramAPI;
+import com.maximde.hologramlib.HologramLib;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;
@@ -130,7 +130,7 @@ public class HologramManager {
                 textHologram.getEntityID(), Optional.of(UUID.randomUUID()), EntityTypes.TEXT_DISPLAY,
                 new Vector3d(location.getX(), location.getY() + 1, location.getZ()), 0f, 0f, 0f, 0, Optional.empty()
         );
-        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramLib.getInstance(), () -> {
             textHologram.getInternalAccess().updateAffectedPlayers();
             textHologram.getInternalAccess().sendPacket(packet);
             textHologram.getInternalAccess().setDead(false);
@@ -141,7 +141,11 @@ public class HologramManager {
     }
 
     public void attach(TextHologram textHologram, int entityID) {
-        textHologram.attach(textHologram, entityID);
+        this.attach(textHologram, entityID, true);
+    }
+
+    public void attach(TextHologram textHologram, int entityID, boolean persistent) {
+        textHologram.attach(textHologram, entityID, persistent);
     }
 
     public boolean register(TextHologram textHologram) {
@@ -195,7 +199,7 @@ public class HologramManager {
             }
         };
 
-        animation.runTaskTimerAsynchronously(HologramAPI.getInstance(), textAnimation.getDelay(), textAnimation.getSpeed());
+        animation.runTaskTimerAsynchronously(HologramLib.getInstance(), textAnimation.getDelay(), textAnimation.getSpeed());
         return animation;
     }
 

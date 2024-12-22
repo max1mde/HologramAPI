@@ -1,4 +1,4 @@
-package com.maximde.hologramapi.utils;
+package com.maximde.hologramlib.utils;
 
 import lombok.Getter;
 import lombok.Setter;

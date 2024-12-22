@@ -69,7 +69,7 @@ private HologramManager hologramManager;
 public void onEnable() {
     hologramManager = HologramAPI.getManager().orElse(null);
     if (hologramManager == null) {
-        getLogger().severe("Failed to initialize HologramAPI manager.");
+        getLogger().severe("Failed to initialize HologramLib manager.");
         return;
     }
 }

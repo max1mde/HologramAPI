@@ -1,4 +1,4 @@
-package com.maximde.hologramapi.hologram;
+package com.maximde.hologramlib.hologram;
 
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.util.Quaternion4f;
@@ -8,9 +8,9 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
-import com.maximde.hologramapi.HologramAPI;
-import com.maximde.hologramapi.utils.MiniMessage;
-import com.maximde.hologramapi.utils.Vector3F;
+import com.maximde.hologramlib.HologramLib;
+import com.maximde.hologramlib.utils.MiniMessage;
+import com.maximde.hologramlib.utils.Vector3F;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -225,7 +225,7 @@ public class TextHologram {
 
     private void startRunnable() {
         if (task != null) return;
-        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramAPI.getInstance(), this::updateAffectedPlayers, 60L, updateTaskPeriod);
+        task = Bukkit.getServer().getScheduler().runTaskTimer(HologramLib.getInstance(), this::updateAffectedPlayers, 60L, updateTaskPeriod);
     }
 
     /**
@@ -233,11 +233,12 @@ public class TextHologram {
      *
      * @param textHologram The hologram to attach
      * @param entityID The entity ID to attach the hologram to
+     * @param persistent If the hologram should be re-attached automatically or not TODO
      */
-    public void attach(TextHologram textHologram, int entityID) {
+    public void attach(TextHologram textHologram, int entityID, boolean persistent) {
         int[] hologramToArray = { textHologram.getEntityID() };
         WrapperPlayServerSetPassengers attachPacket = new WrapperPlayServerSetPassengers(entityID, hologramToArray);
-        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramLib.getInstance(), () -> {
             sendPacket(attachPacket);
         });
     }
@@ -247,7 +248,7 @@ public class TextHologram {
      * Should be called after making any changes to the hologram object.
      */
     public TextHologram update() {
-        Bukkit.getServer().getScheduler().runTask(HologramAPI.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().runTask(HologramLib.getInstance(), () -> {
             updateAffectedPlayers();
             TextDisplayMeta meta = createMeta();
             sendPacket(meta.createPacket());
@@ -388,7 +389,7 @@ public class TextHologram {
     }
 
     private String replaceFontImages(String string) {
-        return HologramAPI.getInstance().getReplaceText().replace(string);
+        return HologramLib.getInstance().getReplaceText().replace(string);
     }
 
     private void updateAffectedPlayers() {
@@ -397,7 +398,7 @@ public class TextHologram {
                 .filter(player -> player.isOnline() && (player.getWorld() != this.location.getWorld() || player.getLocation().distance(this.location) > 20))
                 .peek(player -> {
                     WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(this.entityID);
-                    HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet);
+                    HologramLib.getInstance().getPlayerManager().sendPacket(player, packet);
                 })
                 .toList();
         viewers.removeAll(toRemove);
@@ -427,11 +428,11 @@ public class TextHologram {
 
     private void sendPacket(PacketWrapper<?> packet) {
         if (this.renderMode == RenderMode.NONE) return;
-        viewers.forEach(player -> HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet));
+        viewers.forEach(player -> HologramLib.getInstance().getPlayerManager().sendPacket(player, packet));
     }
 
     private void sendPacket(PacketWrapper<?> packet, List<Player> players) {
         if (this.renderMode == RenderMode.NONE) return;
-        players.forEach(player -> HologramAPI.getInstance().getPlayerManager().sendPacket(player, packet));
+        players.forEach(player -> HologramLib.getInstance().getPlayerManager().sendPacket(player, packet));
     }
 }

@@ -1,6 +1,6 @@
 name: HologramAPI
 version: '${version}'
-main: com.maximde.hologramapi.HologramAPI
+main: com.maximde.hologramlib.HologramLib
 api-version: 1.19
 author: MaximDe
 

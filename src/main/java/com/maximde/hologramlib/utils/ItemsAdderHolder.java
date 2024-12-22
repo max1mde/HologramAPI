@@ -1,4 +1,4 @@
-package com.maximde.hologramapi.utils;
+package com.maximde.hologramlib.utils;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import org.bukkit.Bukkit;
@@ -9,7 +9,7 @@ public class ItemsAdderHolder implements ReplaceText {
 
     public ItemsAdderHolder() throws ClassNotFoundException {
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") == null) {
-            Bukkit.getLogger().log(Level.WARNING, "[HologramAPI] ItemsAdder plugin not found! No custom emojis support.");
+            Bukkit.getLogger().log(Level.WARNING, "[HologramLib] ItemsAdder plugin not found! No custom emojis support.");
             throw new ClassNotFoundException();
         }
     }
