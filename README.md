@@ -7,7 +7,7 @@
 <img width="800px" src="https://github.com/max1mde/HologramLib/assets/114857048/d442ef02-aa87-41ed-bfc2-e2e61d6faffd">
 </div>
 
-Leave a :star: if you like this API :octocat:
+Leave a :star: if you like this library :octocat:
 
 # Features
 - Text animations
