@@ -2,9 +2,9 @@
 <div align="center">
 <a href="https://discord.gg/2UTkYj26B4" target="_blank"><img src="https://img.shields.io/badge/Discord_Server-7289DA?style=flat&logo=discord&logoColor=white" alt="Join Discord Server" style="border-radius: 15px; height: 20px;"></a>
 <a href="https://github.com/max1mde/ExampleHologramPlugin"><img src="https://img.shields.io/badge/Example%20plugin-13B8E1" alt="Version"></a>
-<a href="https://jitpack.io/#max1mde/HologramAPI"><img src="https://jitpack.io/v/max1mde/HologramAPI.svg" alt="jitpack"></a> 
-<a href="https://github.com/max1mde/HologramAPI/releases"><img src="https://img.shields.io/github/downloads/max1mde/HologramAPI/total.svg" alt="Downloads"></a>  
-<img width="800px" src="https://github.com/max1mde/HologramAPI/assets/114857048/d442ef02-aa87-41ed-bfc2-e2e61d6faffd">
+<a href="https://jitpack.io/#max1mde/HologramLib"><img src="https://jitpack.io/v/max1mde/HologramLib.svg" alt="jitpack"></a> 
+<a href="https://github.com/max1mde/HologramLib/releases"><img src="https://img.shields.io/github/downloads/max1mde/HologramLib/total.svg" alt="Downloads"></a>  
+<img width="800px" src="https://github.com/max1mde/HologramLib/assets/114857048/d442ef02-aa87-41ed-bfc2-e2e61d6faffd">
 </div>
 
 Leave a :star: if you like this API :octocat:
@@ -22,8 +22,8 @@ Leave a :star: if you like this API :octocat:
 # Installation
 
 - Download packet events https://www.spigotmc.org/resources/80279/
-- Download HologramAPI-[version]**.jar** file from the [latest release](https://github.com/max1mde/HologramAPI/releases)
-- Upload the HologramAPI-[version]**.jar** and packet events file on your server (_yourserver/**plugins**_ folder)
+- Download HologramLib-[version]**.jar** file from the [latest release](https://github.com/max1mde/HologramLib/releases)
+- Upload the HologramLib-[version]**.jar** and packet events file on your server (_yourserver/**plugins**_ folder)
 - Add the plugin as a dependency to your plugin and use it
 
 **Gradle installation**
@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-  compileOnly 'com.github.max1mde:HologramAPI:1.4.8'
+  compileOnly 'com.github.max1mde:HologramLib:1.4.8'
 }
 ```
 **Maven installation**
@@ -45,7 +45,7 @@ dependencies {
 
 <dependency>
   <groupId>com.github.max1mde</groupId>
-  <artifactId>HologramAPI</artifactId>
+  <artifactId>HologramLib</artifactId>
   <version>1.4.8</version>
   <scope>provided</scope>
 </dependency>
@@ -54,7 +54,7 @@ Add this to your plugin
 `plugin.yml`
 ```yml
 depend:
-  - HologramAPI
+  - HologramLib
 ```
 
 # Example/Showcase Plugin
@@ -68,16 +68,16 @@ private HologramManager hologramManager;
 
 @Override
 public void onEnable() {
-    hologramManager = HologramAPI.getManager().orElse(null);
+    hologramManager = HologramLib.getManager().orElse(null);
     if (hologramManager == null) {
-        getLogger().severe("Failed to initialize HologramAPI manager.");
+        getLogger().severe("Failed to initialize HologramLib manager.");
         return;
     }
 }
 ```
 
 > [!IMPORTANT]
-> If you are shading the library use `HologramAPI.getManager(<Your plugin instance>)` instead!
+> If you are shading the library use `HologramLib.getManager(<Your plugin instance>)` instead!
 
 ### Hologram Rendering Modes
 ```java
