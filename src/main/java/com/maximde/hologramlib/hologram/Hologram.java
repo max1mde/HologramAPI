@@ -102,11 +102,13 @@ public abstract class Hologram<T extends Hologram<T>> {
         validateId(id);
         this.id = id.toLowerCase();
         this.renderMode = renderMode;
+        this.internalAccess = new InternalSetters();
         startRunnable();
     }
 
     protected Hologram(String id, EntityType entityType) {
         this(id, RenderMode.NEARBY, entityType);
+        this.internalAccess = new InternalSetters();
         startRunnable();
     }
 

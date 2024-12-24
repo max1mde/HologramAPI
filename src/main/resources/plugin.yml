@@ -1,4 +1,4 @@
-name: HologramAPI
+name: HologramLib
 version: '${version}'
 main: com.maximde.hologramlib.HologramLib
 api-version: 1.19
