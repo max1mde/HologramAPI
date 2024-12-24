@@ -24,7 +24,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class Hologram {
+public abstract class Hologram<T extends Hologram<T>> {
+    @SuppressWarnings("unchecked")
+    protected T self() {
+        return (T) this;
+    }
+
     @Getter
     protected final List<Player> viewers = new CopyOnWriteArrayList<>();
 
@@ -40,17 +45,16 @@ public abstract class Hologram {
     @Getter @Accessors(chain = true)
     protected double nearbyEntityScanningDistance = 30.0;
 
-    @Setter
     @Getter @Accessors(chain = true)
     protected Display.Billboard billboard = Display.Billboard.CENTER;
 
-    @Setter @Getter @Accessors(chain = true)
+    @Getter @Accessors(chain = true)
     protected int interpolationDurationRotation = 10;
 
-    @Setter @Getter @Accessors(chain = true)
+    @Getter @Accessors(chain = true)
     protected int interpolationDurationTransformation = 10;
 
-    @Setter @Getter @Accessors(chain = true)
+    @Getter @Accessors(chain = true)
     protected double viewRange = 1.0;
 
     @Getter
@@ -191,33 +195,11 @@ public abstract class Hologram {
         return new Vector3F(this.translation.x, this.translation.y, this.translation.z);
     }
 
-    public Hologram setLeftRotation(float x, float y, float z, float w) {
-        this.leftRotation = new Quaternion4f(x, y, z, w);
-        return this;
-    }
-
-    public Hologram setRightRotation(float x, float y, float z, float w) {
-        this.rightRotation = new Quaternion4f(x, y, z, w);
-        return this;
-    }
-
-    public Hologram setTranslation(float x, float y, float z) {
-        this.translation = new Vector3f(x, y, z);
-        return this;
-    }
-
-    public Hologram setTranslation(Vector3F translation) {
-        this.translation = new Vector3f(translation.x, translation.y, translation.z);
-        return this;
-    }
 
     public Vector3F getScale() {
         return new Vector3F(this.scale.x, this.scale.y, this.scale.z);
     }
 
-    public abstract Hologram setScale(float x, float y, float z);
-
-    public abstract Hologram setScale(Vector3F scale);
 
     private void updateAffectedPlayers() {
         List<Player> newPlayers = new ArrayList<>();
@@ -268,31 +250,6 @@ public abstract class Hologram {
         });
     }
 
-
-    public Hologram addViewer(Player player) {
-        this.viewers.add(player);
-        return this;
-    }
-
-    public Hologram removeViewer(Player player) {
-        this.viewers.remove(player);
-        return this;
-    }
-
-    public Hologram addAllViewers(List<Player> viewerList) {
-        this.viewers.addAll(viewerList);
-        return this;
-    }
-
-    public Hologram removeAllViewers() {
-        this.viewers.clear();
-        return this;
-    }
-
-    protected abstract Hologram copy();
-
-    protected abstract Hologram copy(String id);
-
     protected void sendPacket(PacketWrapper<?> packet) {
         if (this.renderMode == RenderMode.NONE) return;
         viewers.forEach(player -> HologramLib.getInstance().getPlayerManager().sendPacket(player, packet));
@@ -302,4 +259,92 @@ public abstract class Hologram {
         if (this.renderMode == RenderMode.NONE) return;
         players.forEach(player -> HologramLib.getInstance().getPlayerManager().sendPacket(player, packet));
     }
+
+    public T setUpdateTaskPeriod(long updateTaskPeriod) {
+        this.updateTaskPeriod = updateTaskPeriod;
+        return self();
+    }
+
+    public T setNearbyEntityScanningDistance(double nearbyEntityScanningDistance) {
+        this.nearbyEntityScanningDistance = nearbyEntityScanningDistance;
+        return self();
+    }
+
+    public T setBillboard(Display.Billboard billboard) {
+        this.billboard = billboard;
+        return self();
+    }
+
+    public T setInterpolationDurationRotation(int interpolationDurationRotation) {
+        this.interpolationDurationRotation = interpolationDurationRotation;
+        return self();
+    }
+
+    public T setInterpolationDurationTransformation(int interpolationDurationTransformation) {
+        this.interpolationDurationTransformation = interpolationDurationTransformation;
+        return self();
+    }
+
+    public T setViewRange(double viewRange) {
+        this.viewRange = viewRange;
+        return self();
+    }
+
+    public T setEntityID(int entityID) {
+        this.entityID = entityID;
+        return self();
+    }
+
+    public T setLeftRotation(float x, float y, float z, float w) {
+        this.leftRotation = new Quaternion4f(x, y, z, w);
+        return self();
+    }
+
+    public T setRightRotation(float x, float y, float z, float w) {
+        this.rightRotation = new Quaternion4f(x, y, z, w);
+        return self();
+    }
+
+    public T setTranslation(float x, float y, float z) {
+        this.translation = new Vector3f(x, y, z);
+        return self();
+    }
+
+    public T setTranslation(Vector3F translation) {
+        this.translation = new Vector3f(translation.x, translation.y, translation.z);
+        return self();
+    }
+
+    public T addViewer(Player player) {
+        this.viewers.add(player);
+        return self();
+    }
+
+    public T removeViewer(Player player) {
+        this.viewers.remove(player);
+        return self();
+    }
+
+    public T addAllViewers(List<Player> viewerList) {
+        this.viewers.addAll(viewerList);
+        return self();
+    }
+
+    public T removeAllViewers() {
+        this.viewers.clear();
+        return self();
+    }
+
+    public T setScale(float x, float y, float z) {
+        this.scale = new Vector3f(x, y, z);
+        return self();
+    }
+
+    public T setScale(Vector3F scale) {
+        this.scale = new Vector3f(scale.x, scale.y, scale.z);
+        return self();
+    }
+
+    protected abstract T copy();
+    protected abstract T copy(String id);
 }
