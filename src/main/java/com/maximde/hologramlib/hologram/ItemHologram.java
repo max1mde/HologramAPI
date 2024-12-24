@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 
-public class ItemHologram extends Hologram {
+public class ItemHologram extends Hologram<ItemHologram> {
 
     @Getter
     @Accessors(chain = true)
@@ -75,23 +75,16 @@ public class ItemHologram extends Hologram {
         return meta.createPacket();
     }
 
-    public Hologram setScale(float x, float y, float z) {
-        this.scale = new Vector3f(x, y, z);
-        return this;
-    }
-
-    public Hologram setScale(Vector3F scale) {
-        this.scale = new Vector3f(scale.x, scale.y, scale.z);
-        return this;
-    }
 
     @Override
-    protected Hologram copy() {
+    protected ItemHologram copy() {
+        //TODO
         return null;
     }
 
     @Override
-    protected Hologram copy(String id) {
+    protected ItemHologram copy(String id) {
+        //TODO
         return null;
     }
 

@@ -22,7 +22,7 @@ import org.joml.Vector3f;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class TextHologram extends Hologram {
+public class TextHologram extends Hologram<TextHologram> {
 
     protected Component text = Component.text("Hologram API");
 
@@ -81,6 +81,7 @@ public class TextHologram extends Hologram {
      *
      * @return A new TextHologram instance with copied properties
      */
+    @Override
     public TextHologram copy(String id) {
         TextHologram copy = new TextHologram(id, this.renderMode);
         copy.text = this.text;
@@ -125,16 +126,6 @@ public class TextHologram extends Hologram {
         meta.setSeeThrough(this.seeThroughBlocks);
         setInternalAlignment(meta);
         return meta.createPacket();
-    }
-
-    public TextHologram setScale(float x, float y, float z) {
-        this.scale = new Vector3f(x, y, z);
-        return this;
-    }
-
-    public TextHologram setScale(Vector3F scale) {
-        this.scale = new Vector3f(scale.x, scale.y, scale.z);
-        return this;
     }
 
     private void setInternalAlignment(TextDisplayMeta meta) {

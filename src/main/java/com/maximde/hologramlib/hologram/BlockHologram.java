@@ -14,7 +14,7 @@ import org.joml.Vector3f;
 import java.awt.*;
 
 
-public class BlockHologram extends Hologram {
+public class BlockHologram extends Hologram<BlockHologram> {
 
     @Getter
     @Accessors(chain = true)
@@ -58,24 +58,13 @@ public class BlockHologram extends Hologram {
         return meta.createPacket();
     }
 
-    public Hologram setScale(float x, float y, float z) {
-        this.scale = new Vector3f(x, y, z);
-        return this;
-    }
-
-    public Hologram setScale(Vector3F scale) {
-        this.scale = new Vector3f(scale.x, scale.y, scale.z);
-        return this;
-    }
-
-
     @Override
-    protected Hologram copy() {
+    protected BlockHologram copy() {
         return null;
     }
 
     @Override
-    protected Hologram copy(String id) {
+    protected BlockHologram copy(String id) {
         return null;
     }
 }
