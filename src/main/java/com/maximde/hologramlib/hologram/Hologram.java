@@ -25,6 +25,7 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Hologram<T extends Hologram<T>> {
+
     @SuppressWarnings("unchecked")
     protected T self() {
         return (T) this;
